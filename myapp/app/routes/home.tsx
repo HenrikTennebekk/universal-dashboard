@@ -16,24 +16,6 @@ const defaultTiles: AnyTileConfig[] = [
     },
     layoutSpan: { w: 2, h: 1 },
   },
-  {
-    id: "link-1",
-    type: "link",
-    title: "Skyss",
-    props: {
-      url: "https://avgangsvisning.skyss.no/view/#/?stops=NSR:StopPlace:31377%7CNSR:Quay:54027,NSR:StopPlace:31377%7CNSR:Quay:54028&viewFreq=10000&type=TERMINAL&colors=darkhttps://react.dev",
-    },
-    layoutSpan: { w: 1, h: 2 },
-  },
-  {
-    id: "weather-1",
-    type: "weather",
-    title: "Weather (Oslo)",
-    props: {
-      city: "Oslo",
-    },
-    layoutSpan: { w: 1, h: 2 },
-  },
 ];
 
 export default function Home() {
