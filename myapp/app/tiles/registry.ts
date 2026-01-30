@@ -28,5 +28,7 @@ export type AnyTileConfig = {
     title: string;
     type: K;
     props: TilePropsMap[K];
+    // Optional layout span (how many columns / rows this tile should occupy)
+    layoutSpan?: { w?: number; h?: number };
   };
 }[TileType];

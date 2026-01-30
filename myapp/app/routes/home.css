@@ -1,0 +1,34 @@
+.home-toolbar{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  padding:12px;
+  justify-content: space-between;
+}
+.home-toolbar .left,
+.home-toolbar .right{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.home-toolbar label{
+  margin-right:6px;
+  font-weight:600;
+}
+.home-toolbar select{
+  margin-right:8px;
+}
+
+/* Make the page fill the viewport and let the dashboard take remaining space */
+.home-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Dashboard inside home should grow and be scrollable when needed */
+.home-root .dashboard {
+  flex: 1 1 auto;
+  min-height: 0; /* allow children to shrink inside flex */
+  overflow: auto;
+}

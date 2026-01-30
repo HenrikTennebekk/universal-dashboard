@@ -1,0 +1,67 @@
+.layout-picker {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.lp-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.lp-item:hover {
+  background: rgba(0,0,0,0.03);
+}
+.lp-item.selected {
+  border-color: var(--accent-color, #2b7be4);
+  box-shadow: 0 0 0 3px rgba(43,123,228,0.12);
+}
+.lp-thumb-wrap {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lp-thumb {
+  width: 46px;
+  height: 46px;
+  fill: none;
+  stroke: #333;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.lp-label {
+  font-size: 11px;
+  color: #333;
+}
+
+.lp-columns-editor {
+  position: absolute;
+  left: 0;
+  top: 68px;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  border-radius: 6px;
+  z-index: 50;
+}
+.lp-columns-editor input[type="number"] {
+  padding: 4px 6px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 4px;
+}
+
+.lp-columns-editor,
+.lp-columns-editor label,
+.lp-columns-editor input,
+.lp-columns-editor button {
+  color: #111;
+}
