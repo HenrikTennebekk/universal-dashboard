@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export type ClockTileProps = {
-  timeZone: string; // e.g. "Europe/Oslo"
+  timeZone?: string;
 };
 
 export function ClockTile({ timeZone }: ClockTileProps) {
@@ -10,14 +10,25 @@ export function ClockTile({ timeZone }: ClockTileProps) {
   useEffect(() => {
     const update = () => {
       const now = new Date();
-      setTime(
-        now.toLocaleTimeString("en-GB", {
-          timeZone,
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        })
-      );
+
+      let tz: string | undefined = timeZone;
+      if (timeZone === "auto") {
+        try {
+          tz = Intl.DateTimeFormat().resolvedOptions().timeZone || undefined;
+        } catch {
+          tz = undefined;
+        }
+      }
+
+      const options: Intl.DateTimeFormatOptions = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      };
+
+      if (tz) options.timeZone = tz;
+
+      setTime(now.toLocaleTimeString("en-GB", options));
     };
 
     update();

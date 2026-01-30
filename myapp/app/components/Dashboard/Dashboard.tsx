@@ -1,4 +1,5 @@
 import { Tile } from "../Tile/Tile"; // assume named export
+import "./Dashboard.css";
 import { tileRegistry } from "../../tiles/registry";
 import type { AnyTileConfig, TilePropsMap } from "../../tiles/registry";
 

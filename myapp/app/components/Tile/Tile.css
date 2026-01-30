@@ -5,12 +5,15 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .tile-header {
   padding: 8px 12px;
   font-weight: 600;
   background: #1c1c1c;
+  margin: 0;
 }
 
 .tile-content {

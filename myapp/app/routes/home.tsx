@@ -8,7 +8,7 @@ const defaultTiles: AnyTileConfig[] = [
     type: "clock",
     title: "Local Time",
     props: {
-      timeZone: "America/New_York",
+      timeZone: "auto",
     },
   },
   {
@@ -17,6 +17,14 @@ const defaultTiles: AnyTileConfig[] = [
     title: "Skyss",
     props: {
       url: "https://avgangsvisning.skyss.no/view/#/?stops=NSR:StopPlace:31377%7CNSR:Quay:54027,NSR:StopPlace:31377%7CNSR:Quay:54028&viewFreq=10000&type=TERMINAL&colors=darkhttps://react.dev",
+    },
+  },
+  {
+    id: "weather-1",
+    type: "weather",
+    title: "Weather (Oslo)",
+    props: {
+      city: "Oslo",
     },
   },
 ];

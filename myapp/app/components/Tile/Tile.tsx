@@ -9,7 +9,7 @@ type TileProps = {
 export function Tile({ title, children }: TileProps) {
   return (
     <div className="tile">
-      <h2>{title}</h2>
+      <h2 className="tile-header">{title}</h2>
       <div className="tile-content">{children}</div>
     </div>
   );
