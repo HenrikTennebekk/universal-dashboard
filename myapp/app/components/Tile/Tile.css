@@ -1,0 +1,19 @@
+.tile {
+  background: #111;
+  color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tile-header {
+  padding: 8px 12px;
+  font-weight: 600;
+  background: #1c1c1c;
+}
+
+.tile-content {
+  flex: 1;
+  padding: 8px;
+}
