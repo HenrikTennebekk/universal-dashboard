@@ -22,7 +22,7 @@ type DashboardProps = {
 
 export function Dashboard({
   tiles,
-  layout = "preset-three-grid",
+  layout = "preset-columns-three",
   isEditing,
   capacity,
   columnsCount,

@@ -155,7 +155,7 @@ export default function Home() {
             <div>
               <label>Layout:</label>
               <LayoutPicker
-                value={(activeSpace?.layout as any) ?? "preset-three-grid"}
+                value={(activeSpace?.layout as any) ?? "preset-columns-three"}
                 currentColumns={activeSpace?.layoutColumns}
                 onChange={(l) => setLayoutForActive(l)}
                 onConfigureColumns={(n) => {
@@ -199,7 +199,7 @@ export default function Home() {
 
       <Dashboard
         tiles={activeSpace?.tiles ?? []}
-        layout={activeSpace?.layout ?? "preset-three-grid"}
+        layout={activeSpace?.layout ?? "preset-columns-three"}
         columnsCount={activeSpace?.layoutColumns}
         tileUnit={activeSpace?.tileUnit}
         tileGap={activeSpace?.tileGap}
