@@ -193,20 +193,6 @@ export default function Home() {
               </button>
             </div>
 
-            <div>
-              <label>Add tile:</label>
-              {tileTypes.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => handleAddTile(t)}
-                  style={{ marginRight: 6 }}
-                  disabled={isLayoutFull}
-                  title={isLayoutFull ? "Layout is full" : undefined}
-                >
-                  + {t}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
       )}
