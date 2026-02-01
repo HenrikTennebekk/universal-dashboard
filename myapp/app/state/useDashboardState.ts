@@ -137,20 +137,18 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
           return [{ w: 1, h: 1 }];
         case "preset-columns-two":
           return [{ w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-stack-two":
-          return [{ w: 1, h: 1 }, { w: 1, h: 1 }];
         case "preset-columns-three":
           return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-focus-three":
-          return [{ w: 1, h: 1 }, { w: 1, h: 2 }, { w: 1, h: 1 }];
-        case "preset-grid-four":
-          return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-columns-four":
-          return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-focus-four":
-          return [{ w: 2, h: 2 }, { w: 1, h: 3 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
+        case "preset-stack-two":
+          return [{ w: 1, h: 1 }, { w: 1, h: 1 }];
         case "preset-stack-three":
           return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
+        case "preset-grid-four":
+          return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
+        case "preset-focus-three":
+          return [{ w: 1, h: 1 }, { w: 1, h: 2 }, { w: 1, h: 1 }];
+        case "preset-focus-four":
+          return [{ w: 2, h: 2 }, { w: 1, h: 3 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
         default:
           return undefined;
       }

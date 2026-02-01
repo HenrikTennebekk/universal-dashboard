@@ -83,76 +83,74 @@
 	background: rgba(0,0,0,0.02);
 }
 
-/* Layout presets (new scheme) */
+
 
 .dashboard.layout-preset-single {
-	grid-template-columns: 1fr;
-	grid-auto-rows: 1fr;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
 }
 
 .dashboard.layout-preset-columns-two {
-	grid-template-columns: repeat(2, 1fr);
-	grid-auto-rows: 1fr;
-}
-
-.dashboard.layout-preset-stack-two {
-	grid-template-columns: 1fr;
-	grid-auto-rows: minmax(120px, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
 }
 
 .dashboard.layout-preset-columns-three {
-	grid-template-columns: repeat(3, 1fr);
-	grid-auto-rows: 1fr;
-}
-
-.dashboard.layout-preset-focus-three {
-	grid-template-columns: 1fr 2fr 1fr;
-	grid-template-rows: repeat(2, 1fr);
-	grid-auto-rows: 1fr;
-}
-.dashboard.layout-preset-focus-three .dashboard-tile:nth-child(2) {
-	grid-row: 1 / span 2;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
 }
 
 .dashboard.layout-preset-grid-four {
-	grid-template-columns: repeat(2, 1fr);
-	grid-auto-rows: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
 }
 
-.dashboard.layout-preset-columns-four {
-	grid-template-columns: repeat(4, 1fr);
-	grid-auto-rows: 1fr;
-}
-
-.dashboard.layout-preset-focus-four {
-	grid-template-columns: repeat(3, 1fr);
-	grid-auto-rows: 1fr;
-}
-.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(1) {
-	grid-column: 1 / span 2;
-	grid-row: 1 / span 2;
-}
-.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(2) {
-	grid-column: 3 / span 1;
-}
-.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(3) {
-	grid-column: 3 / span 1;
-	grid-row: 2 / span 1;
-}
-.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(4) {
-	grid-column: 1 / span 1;
-	grid-row: 3 / span 1;
-}
-.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(5) {
-	grid-column: 2 / span 2;
-	grid-row: 3 / span 1;
+.dashboard.layout-preset-stack-two {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
 }
 
 .dashboard.layout-preset-stack-three {
-	grid-template-columns: 1fr;
-	grid-template-rows: repeat(3, 1fr);
-	grid-auto-rows: 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
 }
+
+.dashboard.layout-preset-focus-three {
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+}
+
+.dashboard.layout-preset-focus-three .dashboard-tile:nth-child(1) {
+    grid-row: 1 / span 2;
+}
+
+.dashboard.layout-preset-focus-four {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+}
+
+.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(1) {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 2;
+}
+
+.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(2) {
+    grid-column: 3 / span 1;
+}
+
+.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(3) {
+    grid-column: 3 / span 1;
+    grid-row: 2 / span 1;
+}
+
+.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(4) {
+    grid-column: 1 / span 1;
+    grid-row: 3 / span 1;
+}
+
 
 /* Orientation responsive tweaks */
 @media (orientation: portrait) {

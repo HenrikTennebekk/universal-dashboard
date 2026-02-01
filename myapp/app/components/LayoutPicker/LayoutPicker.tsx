@@ -30,16 +30,7 @@ export const presets: Preset[] = [
     </svg>
   ) },
 
-  { id: "preset-grid-four", label: "Grid (4)", meta: { capacity: 4, columns: 2 }, render: () => (
-    <svg viewBox="0 0 100 100" className="lp-thumb" aria-hidden>
-      <rect x="6" y="6" width="42" height="42" rx="3" />
-      <rect x="52" y="6" width="42" height="42" rx="3" />
-      <rect x="6" y="52" width="42" height="42" rx="3" />
-      <rect x="52" y="52" width="42" height="42" rx="3" />
-    </svg>
-  ) },
-
-  { id: "preset-stack-two", label: "Stack (2)", meta: { capacity: 2 }, render: () => (
+  { id: "preset-stack-two", label: "Stack (2)", meta: { capacity: 2, columns: 1 }, render: () => (
     <svg viewBox="0 0 100 100" className="lp-thumb" aria-hidden>
       <rect x="6" y="6" width="88" height="44" rx="3" />
       <rect x="6" y="50" width="88" height="44" rx="3" />
@@ -54,7 +45,16 @@ export const presets: Preset[] = [
     </svg>
   ) },
 
-  { id: "preset-focus-three", label: "Focus (3)", meta: { capacity: 3 }, render: () => (
+  { id: "preset-grid-four", label: "Grid (4)", meta: { capacity: 4, columns: 2 }, render: () => (
+    <svg viewBox="0 0 100 100" className="lp-thumb" aria-hidden>
+      <rect x="6" y="6" width="42" height="42" rx="3" />
+      <rect x="52" y="6" width="42" height="42" rx="3" />
+      <rect x="6" y="52" width="42" height="42" rx="3" />
+      <rect x="52" y="52" width="42" height="42" rx="3" />
+    </svg>
+  ) },
+
+  { id: "preset-focus-three", label: "Focus (3)", meta: { capacity: 3, columns: 3 }, render: () => (
     <svg viewBox="0 0 100 100" className="lp-thumb" aria-hidden>
       <rect x="6" y="6" width="88" height="58" rx="3" />
       <rect x="6" y="66" width="42" height="28" rx="3" />
@@ -62,7 +62,7 @@ export const presets: Preset[] = [
     </svg>
   ) },
 
-  { id: "preset-focus-four", label: "Focus (4)", meta: { capacity: 4, columns: 3 }, render: () => (
+  { id: "preset-focus-four", label: "Focus (4)", meta: { capacity: 4, columns: 2 }, render: () => (
     <svg viewBox="0 0 100 100" className="lp-thumb" aria-hidden>
       <rect x="6" y="6" width="58" height="58" rx="3" />
       <rect x="66" y="6" width="28" height="88" rx="3" />
