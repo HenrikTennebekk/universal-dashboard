@@ -4,6 +4,7 @@
   align-items:center;
   padding:12px;
   justify-content: space-between;
+  background-color: rgb(255, 255, 255, 0.05);
 }
 .home-toolbar .left,
 .home-toolbar .right{

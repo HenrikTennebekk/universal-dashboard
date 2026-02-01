@@ -103,7 +103,7 @@ export default function Home() {
         <div className="home-toolbar">
           <div className="left">
             <button onClick={() => setIsEditing(false)} style={{ marginRight: 8 }}>
-              Done
+              Exit
             </button>
 
             <label>Name:</label>
@@ -115,22 +115,9 @@ export default function Home() {
               style={{ width: 180 }}
             />
 
-            <label>Space:</label>
-            <select value={activeSpaceId} onChange={(e) => setActiveSpaceId(e.target.value)}>
-              {spaces.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-
             <button
               onClick={() => {
-                // Ask user for a name for the new space
-                // eslint-disable-next-line no-restricted-globals
-                const name = prompt("Name for new space", "New Space");
-                if (name === null) return;
-                addSpace(name.trim() || "New Space");
+                addSpace("New Space");
               }}
             >
               + New Space
@@ -147,13 +134,21 @@ export default function Home() {
               }}
               style={{ marginLeft: 8 }}
             >
-              Delete Space
+              - Delete Space
             </button>
           </div>
 
+          <label>Space:</label>
+            <select value={activeSpaceId} onChange={(e) => setActiveSpaceId(e.target.value)}>
+              {spaces.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+
           <div className="right">
             <div>
-              <label>Layout:</label>
               <LayoutPicker
                 value={(activeSpace?.layout as any) ?? "preset-columns-three"}
                 currentColumns={activeSpace?.layoutColumns}
@@ -183,14 +178,11 @@ export default function Home() {
               <label>Background:</label>
               <input
                 type="color"
-                value={activeSpace?.backgroundColor ?? "#ffffff"}
+                value={activeSpace?.backgroundColor ?? "#00145c"}
                 onChange={(e) => setBackgroundForActive(e.target.value)}
                 style={{ marginLeft: 8, verticalAlign: "middle" }}
                 title="Choose background color"
               />
-              <button onClick={() => setBackgroundForActive(undefined)} style={{ marginLeft: 8 }}>
-                Clear
-              </button>
             </div>
 
           </div>
