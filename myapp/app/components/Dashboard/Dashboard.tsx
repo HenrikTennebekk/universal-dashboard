@@ -1,9 +1,8 @@
-import { Tile } from "../Tile/Tile"; // assume named export
+import { Tile } from "../Tile/Tile";
 import "./Dashboard.css";
 import { tileRegistry } from "../../tiles/registry";
 import type { AnyTileConfig, TilePropsMap } from "../../tiles/registry";
-import { useState } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { presets as layoutPresets } from "../LayoutPicker/LayoutPicker";
 
 type DashboardProps = {
@@ -40,12 +39,10 @@ export function Dashboard({
   };
 
   // If layout has explicit capacity (finite), show all slots.
-  // For 'columns' (infinite), render only existing columns so they stretch to full width
-  // and provide an explicit "Add column" button instead of many placeholders.
+  // For 'columns' (infinite), render only existing tiles + a single placeholder in edit mode.
   const slotCount = (() => {
     if (!isEditing) return tiles.length;
     if (Number.isFinite(capacity ?? Infinity)) return Math.max(capacity as number, tiles.length);
-    // default: show tiles plus a single placeholder to let the user add more
     return Math.max(tiles.length + 1, 1);
   })();
 
@@ -57,50 +54,51 @@ export function Dashboard({
   }
 
   const inlineStyle: React.CSSProperties = {};
-  // We'll compute concrete column count so each column is exactly `tileUnit` px wide
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [measuredCols, setMeasuredCols] = useState<number | null>(null);
+  const [measuredHeight, setMeasuredHeight] = useState<number | null>(null);
 
   useEffect(() => {
-    function computeCols() {
+    function measure() {
       const el = containerRef.current;
       if (!el) return;
       const width = el.clientWidth;
+      const height = el.clientHeight;
       const gap = tileGap ?? 12;
       const unit = Math.max(64, tileUnit ?? 240);
       const cols = Math.max(1, Math.floor((width + gap) / (unit + gap)));
       setMeasuredCols(cols);
+      setMeasuredHeight(height);
     }
 
-    computeCols();
-    const ro = new ResizeObserver(() => computeCols());
+    measure();
+    const ro = new ResizeObserver(() => measure());
     if (containerRef.current) ro.observe(containerRef.current);
-    window.addEventListener("resize", computeCols);
+    window.addEventListener("resize", measure);
     return () => {
       ro.disconnect();
-      window.removeEventListener("resize", computeCols);
+      window.removeEventListener("resize", measure);
     };
   }, [tileUnit, tileGap]);
 
-  // If a specific columnsCount is provided (e.g., columns preset or preset meta), prefer that.
   const presetMatch = layoutPresets.find((x) => x.id === (layout ?? ""));
   const presetCols = presetMatch?.meta?.columns;
   const finalCols = Number.isFinite(columnsCount ?? NaN)
     ? (columnsCount as number)
     : presetCols ?? measuredCols ?? 1;
 
-  // set grid template so columns evenly split the available width (prevent overflow)
-  inlineStyle.gridTemplateColumns = `repeat(${finalCols}, 1fr)`;
   inlineStyle.gap = `${tileGap}px`;
   (inlineStyle as any)["--tile-gap"] = `${tileGap}px`;
+  (inlineStyle as any)["--dashboard-cols"] = String(finalCols);
 
-  // compute rows needed to place tiles given their spans so we can size rows to fill container
+  const isFocusLayout = layout === "preset-focus-three" || layout === "preset-focus-four";
+
   const computeRowsNeeded = (cols: number, items: AnyTileConfig[]) => {
     const heights = new Array(cols).fill(0);
     for (const it of items) {
       const w = Math.max(1, Math.min(cols, it.layoutSpan?.w ?? 1));
       const h = Math.max(1, it.layoutSpan?.h ?? 1);
-      // find placement column: leftmost index where max height over the span is minimal
+
       let bestIdx = 0;
       let bestMax = Infinity;
       for (let c = 0; c <= cols - w; c++) {
@@ -110,21 +108,28 @@ export function Dashboard({
           bestIdx = c;
         }
       }
-      // place tile
+
       const newHeight = bestMax + h;
       for (let c = bestIdx; c < bestIdx + w; c++) heights[c] = newHeight;
     }
     return Math.max(1, Math.max(...heights));
   };
 
-  const rowsNeeded = computeRowsNeeded(finalCols, tiles);
+  let rowsNeeded = computeRowsNeeded(finalCols, tiles);
 
-  // set row height so rowsNeeded * rowHeight == container height (fill whole area)
-  const containerHeight = containerRef.current?.clientHeight ?? 800;
-  const rowHeight = Math.max(48, Math.floor(containerHeight / Math.max(1, rowsNeeded)));
+  if (isFocusLayout) rowsNeeded = Math.max(rowsNeeded, 3);
+
+  const el = containerRef.current;
+  const paddingY = 12 * 2;
+  const gapsY = Math.max(0, (rowsNeeded - 1) * tileGap);
+
+  const viewportH = typeof window !== "undefined" ? window.innerHeight : 800;
+  const containerHeight = measuredHeight ?? el?.clientHeight ?? viewportH;
+  const availableForRows = Math.max(0, containerHeight - paddingY - gapsY);
+
+  const rowHeight = Math.max(48, Math.floor(availableForRows / Math.max(1, rowsNeeded)));
   (inlineStyle as any)["--tile-row"] = `${rowHeight}px`;
 
-  // compute current column pixel width for interactive resizing (actual rendered size)
   const columnWidth = (() => {
     const el = containerRef.current;
     if (!el) return Math.max(64, tileUnit);
@@ -133,10 +138,35 @@ export function Dashboard({
     return Math.max(32, Math.floor(width / finalCols));
   })();
 
+  const focusPlacements = useMemo(() => {
+    if (layout === "preset-focus-three") {
+      return [
+        { gridColumn: "1 / span 2", gridRow: "1 / span 2" },
+        { gridColumn: "1", gridRow: "3" },
+        { gridColumn: "2", gridRow: "3" },
+      ] satisfies React.CSSProperties[];
+    }
+    if (layout === "preset-focus-four") {
+      return [
+        { gridColumn: "1 / span 2", gridRow: "1 / span 2" },
+        { gridColumn: "3", gridRow: "1 / span 3" },
+        { gridColumn: "1", gridRow: "3" },
+        { gridColumn: "2", gridRow: "3" },
+      ] satisfies React.CSSProperties[];
+    }
+    return null;
+  }, [layout]);
+
+  const getFocusPlacement = (idx: number): React.CSSProperties | undefined => {
+    if (!focusPlacements) return undefined;
+    return focusPlacements[idx];
+  };
+
   return (
     <div ref={containerRef} className={`dashboard layout-${sanitizeId(layout)}`} style={inlineStyle}>
       {Array.from({ length: slotCount }).map((_, i) => {
         const tile = tiles[i];
+
         if (tile) {
           const TileComponent = tileRegistry[tile.type]
             .component as React.ComponentType<TilePropsMap[typeof tile.type]>;
@@ -144,8 +174,12 @@ export function Dashboard({
           const spanW = Math.max(1, Math.min(finalCols, tile.layoutSpan?.w ?? 1));
           const spanH = Math.max(1, tile.layoutSpan?.h ?? 1);
 
+          const focusStyle = isFocusLayout ? getFocusPlacement(i) : undefined;
+          const placementStyle: React.CSSProperties =
+            focusStyle ?? { gridColumn: `span ${spanW}`, gridRow: `span ${spanH}` };
+
           return (
-            <div className="dashboard-tile" key={tile.id} style={{ gridColumn: `span ${spanW}`, gridRow: `span ${spanH}` }}>
+            <div className="dashboard-tile" key={tile.id} style={placementStyle}>
               <Tile
                 title={tile.title}
                 isEditing={isEditing}
@@ -156,7 +190,6 @@ export function Dashboard({
                 onUpdateProps={(props) => onUpdateTile?.(tile.id, { props })}
                 layoutSpan={tile.layoutSpan}
                 onUpdateLayoutSpan={(span) => onUpdateTile?.(tile.id, { layoutSpan: span })}
-                // pass sizing info for interactive resizing
                 _gridUnit={columnWidth}
                 _rowHeight={rowHeight}
                 _cols={finalCols}
@@ -169,8 +202,16 @@ export function Dashboard({
         }
 
         // empty placeholder slot
+        const focusStyle = isFocusLayout ? getFocusPlacement(i) : undefined;
+        const placeholderStyle: React.CSSProperties =
+          focusStyle ?? { gridColumn: `span 1`, gridRow: `span 1` };
+
         return (
-          <div className="dashboard-tile dashboard-placeholder" key={`slot-${i}`} style={{ gridColumn: `span 1`, gridRow: `span 1` }}>
+          <div
+            className="dashboard-tile dashboard-placeholder"
+            key={`slot-${i}`}
+            style={placeholderStyle}
+          >
             <button
               className="placeholder-button"
               onClick={() => setOpenAddIndex(openAddIndex === i ? null : i)}
@@ -195,8 +236,6 @@ export function Dashboard({
           </div>
         );
       })}
-
-      {/* add-column button removed — use LayoutPicker to configure columns or placeholders to add tiles */}
     </div>
   );
 }
