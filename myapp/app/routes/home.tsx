@@ -120,21 +120,17 @@ export default function Home() {
                 addSpace("New Space");
               }}
             >
-              + New Space
+              +
             </button>
 
             <button
               onClick={() => {
                 const name = activeSpace?.name ?? "this space";
                 if (!activeSpace?.id) return;
-                // eslint-disable-next-line no-restricted-globals
-                if (confirm(`Delete space "${name}"? This cannot be undone.`)) {
-                  removeSpace(activeSpace.id);
-                }
+                removeSpace(activeSpace.id);
               }}
-              style={{ marginLeft: 8 }}
             >
-              - Delete Space
+              -
             </button>
           </div>
 
