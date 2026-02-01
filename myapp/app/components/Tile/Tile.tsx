@@ -100,7 +100,7 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
           {isEditing && (
             <div style={{ marginLeft: "8px", display: "flex", gap: 8 }}>
               <button onClick={() => setShowPropsEditor((v) => !v)} aria-label="Edit props">
-                {showPropsEditor ? "Close" : "Edit props"}
+                {showPropsEditor ? "Close" : "Edit"}
               </button>
               <button onClick={onRemove} aria-label="Remove tile">
                 Remove

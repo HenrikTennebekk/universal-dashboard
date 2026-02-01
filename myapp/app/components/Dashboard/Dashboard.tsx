@@ -216,19 +216,16 @@ export function Dashboard({
               className="placeholder-button"
               onClick={() => setOpenAddIndex(openAddIndex === i ? null : i)}
               aria-expanded={openAddIndex === i}
-              aria-label={`Add tile in slot ${i + 1}`}
               disabled={!isEditing}
-              title={isEditing ? "Add tile" : "Enter edit mode to add tiles"}
             >
               <div className="placeholder-plus">+</div>
-              <div className="placeholder-text">Add</div>
             </button>
 
             {openAddIndex === i && (
               <div className="placeholder-menu">
                 {tileTypes.map((t) => (
                   <button key={t} onClick={() => handleAdd(t, i)} className="placeholder-menu-item">
-                    + {t}
+                    + {t.charAt(0).toUpperCase() + t.slice(1)}
                   </button>
                 ))}
               </div>
