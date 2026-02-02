@@ -103,7 +103,7 @@ export default function Home() {
         <div className="home-toolbar">
           <div className="left">
             <button onClick={() => setIsEditing(false)} style={{ marginRight: 8 }}>
-              Done
+              Exit
             </button>
 
             <label>Name:</label>
@@ -115,7 +115,26 @@ export default function Home() {
               style={{ width: 180 }}
             />
 
-            <label>Space:</label>
+            <button
+              onClick={() => {
+                addSpace("New Space");
+              }}
+            >
+              +
+            </button>
+
+            <button
+              onClick={() => {
+                const name = activeSpace?.name ?? "this space";
+                if (!activeSpace?.id) return;
+                removeSpace(activeSpace.id);
+              }}
+            >
+              -
+            </button>
+          </div>
+
+          <label>Space:</label>
             <select value={activeSpaceId} onChange={(e) => setActiveSpaceId(e.target.value)}>
               {spaces.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -124,38 +143,10 @@ export default function Home() {
               ))}
             </select>
 
-            <button
-              onClick={() => {
-                // Ask user for a name for the new space
-                // eslint-disable-next-line no-restricted-globals
-                const name = prompt("Name for new space", "New Space");
-                if (name === null) return;
-                addSpace(name.trim() || "New Space");
-              }}
-            >
-              + New Space
-            </button>
-
-            <button
-              onClick={() => {
-                const name = activeSpace?.name ?? "this space";
-                if (!activeSpace?.id) return;
-                // eslint-disable-next-line no-restricted-globals
-                if (confirm(`Delete space "${name}"? This cannot be undone.`)) {
-                  removeSpace(activeSpace.id);
-                }
-              }}
-              style={{ marginLeft: 8 }}
-            >
-              Delete Space
-            </button>
-          </div>
-
           <div className="right">
             <div>
-              <label>Layout:</label>
               <LayoutPicker
-                value={(activeSpace?.layout as any) ?? "preset-three-grid"}
+                value={(activeSpace?.layout as any) ?? "preset-columns-three"}
                 currentColumns={activeSpace?.layoutColumns}
                 onChange={(l) => setLayoutForActive(l)}
                 onConfigureColumns={(n) => {
@@ -183,37 +174,20 @@ export default function Home() {
               <label>Background:</label>
               <input
                 type="color"
-                value={activeSpace?.backgroundColor ?? "#ffffff"}
+                value={activeSpace?.backgroundColor ?? "#00145c"}
                 onChange={(e) => setBackgroundForActive(e.target.value)}
                 style={{ marginLeft: 8, verticalAlign: "middle" }}
                 title="Choose background color"
               />
-              <button onClick={() => setBackgroundForActive(undefined)} style={{ marginLeft: 8 }}>
-                Clear
-              </button>
             </div>
 
-            <div>
-              <label>Add tile:</label>
-              {tileTypes.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => handleAddTile(t)}
-                  style={{ marginRight: 6 }}
-                  disabled={isLayoutFull}
-                  title={isLayoutFull ? "Layout is full" : undefined}
-                >
-                  + {t}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
       )}
 
       <Dashboard
         tiles={activeSpace?.tiles ?? []}
-        layout={activeSpace?.layout ?? "preset-three-grid"}
+        layout={activeSpace?.layout ?? "preset-columns-three"}
         columnsCount={activeSpace?.layoutColumns}
         tileUnit={activeSpace?.tileUnit}
         tileGap={activeSpace?.tileGap}

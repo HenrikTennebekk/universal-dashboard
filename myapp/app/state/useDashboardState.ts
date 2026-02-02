@@ -8,7 +8,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
     {
       id: "space-1",
       name: "Default",
-      layout: "preset-three-grid",
+      layout: "preset-columns-three",
       layoutColumns: 2,
       tiles: initialTiles,
       backgroundColor: undefined,
@@ -63,7 +63,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
 
   function addSpace(name = "New Space") {
     const id = `space-${Date.now()}`;
-    const s: SpaceConfig = { id, name, layout: "preset-three-grid", tiles: [], backgroundColor: undefined };
+    const s: SpaceConfig = { id, name, layout: "preset-columns-three", tiles: [], backgroundColor: undefined };
     setSpaces((prev) => [...prev, s]);
     setActiveSpaceId(id);
   }
@@ -72,7 +72,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
     setSpaces((prev) => {
       const next = prev.filter((s) => s.id !== id);
       if (next.length === 0) {
-        const fallback: SpaceConfig = { id: "space-1", name: "Default", layout: "preset-three-grid", tiles: [], backgroundColor: undefined };
+        const fallback: SpaceConfig = { id: "space-1", name: "Default", layout: "preset-columns-three", tiles: [], backgroundColor: undefined };
         setActiveSpaceId(fallback.id);
         return [fallback];
       }
@@ -135,28 +135,20 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
       switch (presetId) {
         case "preset-single":
           return [{ w: 1, h: 1 }];
-        case "preset-two-side":
+        case "preset-columns-two":
           return [{ w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-two-stack":
-          return [{ w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-three-grid":
+        case "preset-columns-three":
           return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-focus-small":
+        case "preset-stack-two":
+          return [{ w: 1, h: 1 }, { w: 1, h: 1 }];
+        case "preset-stack-three":
+          return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
+        case "preset-grid-four":
+          return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
+        case "preset-focus-three":
           return [{ w: 1, h: 1 }, { w: 1, h: 2 }, { w: 1, h: 1 }];
-        case "preset-four-2x2":
-          return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-four-columns":
-          return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
-        case "preset-five-mosaic":
-          return [
-            { w: 2, h: 2 },
-            { w: 1, h: 1 },
-            { w: 1, h: 1 },
-            { w: 1, h: 1 },
-            { w: 2, h: 1 },
-          ];
-        case "preset-three-rows":
-          return [{ w: 1, h: 1 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
+        case "preset-focus-four":
+          return [{ w: 2, h: 2 }, { w: 1, h: 3 }, { w: 1, h: 1 }, { w: 1, h: 1 }];
         default:
           return undefined;
       }

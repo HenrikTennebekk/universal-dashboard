@@ -1,16 +1,8 @@
 /* Dashboard grid and tile sizing. Adjust CSS variables to change dimensions. */
 
 .dashboard {
-	display: grid;
-	/* grid-template-columns is set inline from the component; use fractional columns to avoid overflow */
-	/* default row height is a fraction of the tile unit; override via inline styles if desired */
-	grid-auto-rows: var(--tile-row, 200px);
-	gap: var(--tile-gap, 12px);
-	padding: 12px;
-	min-height: 0; /* allow flex parent to control height */
-	width: 100%;
-	max-width: 100%;
-	overflow-x: hidden;
+  min-height: 100dvh;
+  display: grid;
 }
 
 .dashboard-tile {
@@ -26,8 +18,8 @@
 	align-items: center;
 	justify-content: center;
 	position: relative;
-	border: 2px dashed rgba(0, 0, 0, 0.08);
-	background: rgba(0, 0, 0, 0.01);
+	border: 2px dashed rgba(255, 255, 255, 0.08);
+	background: rgba(255, 255, 255, 0.01);
 }
 
 .placeholder-button {
@@ -39,7 +31,7 @@
 	gap: 6px;
 	padding: 12px;
 	cursor: pointer;
-	color: #222;
+	color: #ffffff;
 }
 .placeholder-button:disabled {
 	opacity: 0.5;
@@ -49,15 +41,12 @@
 	width: 40px;
 	height: 40px;
 	border-radius: 10px;
-	background: rgba(0,0,0,0.04);
+	background: rgba(255, 255, 255, 0.08);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	font-size: 20px;
 	font-weight: 600;
-}
-.placeholder-text {
-	font-size: 13px;
 }
 
 .placeholder-menu {
@@ -66,12 +55,12 @@
 	top: 8px;
 	background: #fff;
 	border: 1px solid rgba(0,0,0,0.08);
-	box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 	padding: 8px;
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 	z-index: 30;
+	align-items: flex-start;
 }
 .placeholder-menu-item {
 	color: #111;
@@ -84,76 +73,84 @@
 	background: rgba(0,0,0,0.02);
 }
 
-/* Layout presets (new scheme) */
+
 
 .dashboard.layout-preset-single {
-	grid-template-columns: 1fr;
-	grid-auto-rows: 1fr;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
 }
 
-.dashboard.layout-preset-two-side {
-	grid-template-columns: repeat(2, 1fr);
-	grid-auto-rows: 1fr;
+.dashboard.layout-preset-columns-two {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
 }
 
-.dashboard.layout-preset-two-stack {
-	grid-template-columns: 1fr;
-	grid-auto-rows: minmax(120px, 1fr);
+.dashboard.layout-preset-columns-three {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
 }
 
-.dashboard.layout-preset-three-grid {
-	grid-template-columns: repeat(3, 1fr);
-	grid-auto-rows: 1fr;
+.dashboard.layout-preset-grid-four {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
 }
 
-.dashboard.layout-preset-focus-small {
-	grid-template-columns: 1fr 2fr 1fr;
-	grid-template-rows: repeat(2, 1fr);
-	grid-auto-rows: 1fr;
-}
-.dashboard.layout-preset-focus-small .dashboard-tile:nth-child(2) {
-	grid-row: 1 / span 2;
+.dashboard.layout-preset-stack-two {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
 }
 
-.dashboard.layout-preset-four-2x2 {
-	grid-template-columns: repeat(2, 1fr);
-	grid-auto-rows: 1fr;
+.dashboard.layout-preset-stack-three {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
 }
 
-.dashboard.layout-preset-four-columns {
-	grid-template-columns: repeat(4, 1fr);
-	grid-auto-rows: 1fr;
+.dashboard.layout-preset-focus-three {
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.dashboard.layout-preset-five-mosaic {
-	grid-template-columns: repeat(3, 1fr);
-	grid-auto-rows: 1fr;
-}
-.dashboard.layout-preset-five-mosaic .dashboard-tile:nth-child(1) {
-	grid-column: 1 / span 2;
-	grid-row: 1 / span 2;
-}
-.dashboard.layout-preset-five-mosaic .dashboard-tile:nth-child(2) {
-	grid-column: 3 / span 1;
-}
-.dashboard.layout-preset-five-mosaic .dashboard-tile:nth-child(3) {
-	grid-column: 3 / span 1;
-	grid-row: 2 / span 1;
-}
-.dashboard.layout-preset-five-mosaic .dashboard-tile:nth-child(4) {
-	grid-column: 1 / span 1;
-	grid-row: 3 / span 1;
-}
-.dashboard.layout-preset-five-mosaic .dashboard-tile:nth-child(5) {
-	grid-column: 2 / span 2;
-	grid-row: 3 / span 1;
+.dashboard.layout-preset-focus-three .dashboard-tile:nth-child(1) {
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 2;
 }
 
-.dashboard.layout-preset-three-rows {
-	grid-template-columns: 1fr;
-	grid-template-rows: repeat(3, 1fr);
-	grid-auto-rows: 1fr;
+.dashboard.layout-preset-focus-three .dashboard-tile:nth-child(2) {
+  grid-column: 1;
+  grid-row: 3;
 }
+
+.dashboard.layout-preset-focus-three .dashboard-tile:nth-child(3) {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.dashboard.layout-preset-focus-four {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(1) {
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 2;
+}
+
+.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(2) {
+  grid-column: 3;
+  grid-row: 1 / span 3;
+}
+
+.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(3) {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.dashboard.layout-preset-focus-four .dashboard-tile:nth-child(4) {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+
 
 /* Orientation responsive tweaks */
 @media (orientation: portrait) {
