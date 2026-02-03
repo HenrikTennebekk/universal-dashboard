@@ -137,17 +137,48 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
           )}
 
           {tileType === "clock" && (
-            <div>
-              <label>Timezone:</label>
-              <input
-                value={editingProps?.timeZone ?? ""}
-                onChange={(e) => setEditingProps({ ...editingProps, timeZone: e.target.value })}
-                onBlur={() => saveProps()}
-                placeholder="auto or Europe/Oslo"
-                style={{ width: "100%" }}
-              />
+            <div style={{ display: "grid", gap: 8 }}>
+              <div>
+                <label>Timezone:</label>
+                <input
+                  value={editingProps?.timeZone ?? ""}
+                  onChange={(e) => setEditingProps({ ...editingProps, timeZone: e.target.value })}
+                  onBlur={() => saveProps()}
+                  placeholder="auto or Europe/Oslo"
+                  style={{ width: "100%" }}
+                />
+              </div>
+
+              <div>
+                <label>Clock type:</label>
+                <select
+                  value={editingProps?.variant ?? "digital"}
+                  onChange={(e) => {
+                    setEditingProps({ ...editingProps, variant: e.target.value });
+                  }}
+                  onBlur={() => saveProps()}
+                  style={{ width: "100%" }}
+                >
+                  <option value="digital">Digital</option>
+                  <option value="analog">Analog</option>
+                  <option value="both">Both</option>
+                </select>
+              </div>
+
+              <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                  type="checkbox"
+                  checked={editingProps?.use24Hour ?? true}
+                  onChange={(e) => {
+                    setEditingProps({ ...editingProps, use24Hour: e.target.checked });
+                  }}
+                  onBlur={() => saveProps()}
+                />
+                24-hour time
+              </label>
             </div>
           )}
+
 
           <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
             <button onClick={saveProps}>Save</button>
@@ -190,7 +221,8 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
         </div>
       )}
 
-      <div className="tile-content">{children}</div>
+      <div className={`tile-content${tileType === "clock" ? " tile-content--clock" : ""}`}>{children}</div>
+
       {isEditing && (
         <>
           <div
