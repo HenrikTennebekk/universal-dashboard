@@ -28,51 +28,6 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
 
   useEffect(() => setEditingSpan(layoutSpan ?? { w: 1, h: 1 }), [layoutSpan]);
 
-  // Interactive resize handlers
-  function startDrag(e: React.MouseEvent | React.TouchEvent, mode: "w" | "h" | "both") {
-    if (!isEditing) return;
-    e.preventDefault();
-    const startX = "touches" in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
-    const startY = "touches" in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
-    const startSpan = { w: editingSpan.w ?? 1, h: editingSpan.h ?? 1 };
-
-    function onMove(ev: MouseEvent | TouchEvent) {
-      const mx = "touches" in ev ? ev.touches[0].clientX : (ev as MouseEvent).clientX;
-      const my = "touches" in ev ? ev.touches[0].clientY : (ev as MouseEvent).clientY;
-      const dx = mx - startX;
-      const dy = my - startY;
-
-        const unit = _gridUnit ?? 320;
-        const rowH = _rowHeight ?? 200;
-        const cols = _cols ?? 1;
-        const maxRows = _maxRows ?? Infinity;
-
-      let dW = 0;
-      let dH = 0;
-      if (mode === "w" || mode === "both") dW = Math.round(dx / unit);
-      if (mode === "h" || mode === "both") dH = Math.round(dy / rowH);
-
-      const next = {
-        w: Math.max(1, Math.min(cols, (startSpan.w ?? 1) + dW)),
-        h: Math.max(1, Math.min(maxRows, (startSpan.h ?? 1) + dH)),
-      };
-      setEditingSpan(next);
-      onUpdateLayoutSpan?.(next);
-    }
-
-    function onUp() {
-      document.removeEventListener("mousemove", onMove as any);
-      document.removeEventListener("touchmove", onMove as any);
-      document.removeEventListener("mouseup", onUp as any);
-      document.removeEventListener("touchend", onUp as any);
-    }
-
-    document.addEventListener("mousemove", onMove as any, { passive: false });
-    document.addEventListener("touchmove", onMove as any, { passive: false });
-    document.addEventListener("mouseup", onUp as any);
-    document.addEventListener("touchend", onUp as any);
-  }
-
   function saveProps() {
     onUpdateProps?.(editingProps);
     onUpdateLayoutSpan?.(editingSpan);
@@ -221,29 +176,6 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
       )}
 
       <div className={`tile-content${tileType === "clock" ? " tile-content--clock" : ""}`}>{children}</div>
-
-      {isEditing && (
-        <>
-          <div
-            className="tile-handle tile-handle-right"
-            onMouseDown={(e) => startDrag(e, "w")}
-            onTouchStart={(e) => startDrag(e, "w")}
-            aria-hidden
-          />
-          <div
-            className="tile-handle tile-handle-bottom"
-            onMouseDown={(e) => startDrag(e, "h")}
-            onTouchStart={(e) => startDrag(e, "h")}
-            aria-hidden
-          />
-          <div
-            className="tile-handle tile-handle-corner"
-            onMouseDown={(e) => startDrag(e, "both")}
-            onTouchStart={(e) => startDrag(e, "both")}
-            aria-hidden
-          />
-        </>
-      )}
     </div>
   );
 }
