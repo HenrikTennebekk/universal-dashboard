@@ -161,7 +161,6 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
                 >
                   <option value="digital">Digital</option>
                   <option value="analog">Analog</option>
-                  <option value="both">Both</option>
                 </select>
               </div>
 

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 
-export type ClockVariant = "digital" | "analog" | "both";
+export type ClockVariant = "digital" | "analog";
 
 export type ClockTileProps = {
   /** "auto" uses the browser's detected IANA timezone */
   timeZone?: string;
-  /** digital | analog | both */
+  /** digital | analog */
   variant?: ClockVariant;
   /** true = 24h, false = AM/PM */
   use24Hour?: boolean;
@@ -71,7 +71,7 @@ export function ClockTile({
 
   return (
     <div className="clock-tile">
-      {(variant === "analog" || variant === "both") && (
+      {(variant === "analog") && (
         <svg
           className="clock-analog"
           viewBox="0 0 100 100"
@@ -129,12 +129,10 @@ export function ClockTile({
         </svg>
       )}
 
-      {(variant === "digital" || variant === "both") && (
+      {(variant === "digital") && (
         <div
           className={
-            variant === "both"
-              ? "clock-digital clock-digital-overlay"
-              : "clock-digital"
+            "clock-digital"
           }
           aria-label="Digital clock"
         >
