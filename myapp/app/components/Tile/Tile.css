@@ -22,16 +22,6 @@
   padding: 8px;
 }
 
-/* Resize handles shown in editing mode */
-.tile-handle {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 3px;
-  z-index: 40;
-}
 .tile-handle-right {
   top: 50%;
   right: -7px;
@@ -50,11 +40,6 @@
   cursor: nwse-resize;
 }
 
-/* Clock tile: let the clock fill the whole tile area */
-.tile-content--clock {
-  padding: 0;
-}
-
 .clock-tile {
   position: relative;
   width: 100%;
@@ -64,7 +49,6 @@
   justify-content: center;
 }
 
-/* Digital */
 .clock-digital {
   font-size: clamp(2rem, 6vw, 5rem);
   font-weight: 600;
@@ -76,7 +60,6 @@
   position: absolute;
 }
 
-/* Analog */
 .clock-analog {
   width: 100%;
   height: 100%;
