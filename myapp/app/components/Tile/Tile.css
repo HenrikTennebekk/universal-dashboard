@@ -22,16 +22,6 @@
   padding: 8px;
 }
 
-/* Resize handles shown in editing mode */
-.tile-handle {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 3px;
-  z-index: 40;
-}
 .tile-handle-right {
   top: 50%;
   right: -7px;
@@ -48,4 +38,64 @@
   right: -7px;
   bottom: -7px;
   cursor: nwse-resize;
+}
+
+.clock-tile {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clock-digital {
+  font-size: clamp(2rem, 6vw, 5rem);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1;
+}
+
+.clock-digital-overlay {
+  position: absolute;
+}
+
+.clock-analog {
+  width: 100%;
+  height: 100%;
+}
+
+.clock-face {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.clock-mark {
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.hour-hand,
+.minute-hand,
+.second-hand {
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+.hour-hand {
+  stroke-width: 3;
+}
+
+.minute-hand {
+  stroke-width: 2;
+}
+
+.second-hand {
+  stroke-width: 1;
+}
+
+.clock-center {
+  fill: currentColor;
 }
