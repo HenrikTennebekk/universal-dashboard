@@ -11,8 +11,6 @@ type TileProps = {
   tileType?: string;
   tileProps?: any;
   onUpdateProps?: (props: any) => void;
-  layoutSpan?: { w?: number; h?: number };
-  onUpdateLayoutSpan?: (span: { w?: number; h?: number }) => void;
   // internal props passed from Dashboard for interactive resizing
   _gridUnit?: number;
   _rowHeight?: number;
@@ -20,18 +18,36 @@ type TileProps = {
   _maxRows?: number;
 };
 
-export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tileType, tileProps, onUpdateProps, layoutSpan, onUpdateLayoutSpan, _gridUnit, _rowHeight, _cols }: TileProps) {
+export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tileType, tileProps, onUpdateProps, _gridUnit, _rowHeight, _cols }: TileProps) {
   const [editingTitle, setEditingTitle] = useState(title);
   const [editingProps, setEditingProps] = useState<any>(tileProps ?? {});
-  const [editingSpan, setEditingSpan] = useState<{ w?: number; h?: number }>(layoutSpan ?? { w: 1, h: 1 });
   const [showPropsEditor, setShowPropsEditor] = useState(false);
-
-  useEffect(() => setEditingSpan(layoutSpan ?? { w: 1, h: 1 }), [layoutSpan]);
 
   function saveProps() {
     onUpdateProps?.(editingProps);
-    onUpdateLayoutSpan?.(editingSpan);
     setShowPropsEditor(false);
+  }
+
+  async function handleImageFiles(files: FileList | null) {
+    if (!files || files.length === 0) return;
+
+    const readFile = (file: File) =>
+      new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result ?? ""));
+        reader.onerror = () => reject(new Error("Failed to read file"));
+        reader.readAsDataURL(file);
+      });
+
+    try {
+      const uploaded = await Promise.all(Array.from(files).map(readFile));
+      setEditingProps((prev: any) => {
+        const existing = Array.isArray(prev?.images) ? prev.images : [];
+        return { ...prev, images: [...existing, ...uploaded.filter(Boolean)] };
+      });
+    } catch {
+      // Ignore failed reads; user can retry.
+    }
   }
 
   return (
@@ -133,6 +149,52 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
             </div>
           )}
 
+          {tileType === "image" && (
+            <div className="tile-grid-col">
+              <div>
+                <label>Images:</label>
+                <input
+                  className="tile-input-full"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => handleImageFiles(e.target.files)}
+                />
+              </div>
+
+              <div>
+                <label>Interval (seconds):</label>
+                <input
+                  className="tile-input-full"
+                  type="number"
+                  min={1}
+                  value={editingProps?.intervalSeconds ?? 6}
+                  onChange={(e) => setEditingProps({ ...editingProps, intervalSeconds: Math.max(1, Number(e.target.value) || 1) })}
+                  onBlur={() => saveProps()}
+                />
+              </div>
+
+              {Array.isArray(editingProps?.images) && editingProps.images.length > 0 && (
+                <div className="tile-grid-col">
+                  <div>Images: {editingProps.images.length}</div>
+                  {editingProps.images.map((src: string, idx: number) => (
+                    <div key={`${idx}-${src.slice(0, 24)}`} className="tile-flex-row">
+                      <img className="tile-image-thumb" src={src} alt="" />
+                      <button
+                        onClick={() => {
+                          const next = editingProps.images.filter((_: string, i: number) => i !== idx);
+                          setEditingProps({ ...editingProps, images: next });
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
 
           <div className="tile-flex-row" style={{ marginTop: 8 }}>
             <button onClick={saveProps}>Save</button>
@@ -144,33 +206,6 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
             >
               Cancel
             </button>
-          </div>
-          <div className="tile-flex-row" style={{ marginTop: 8 }}>
-            <label className="tile-label">
-              Width (units):
-              <input
-                className="tile-input-small"
-                type="number"
-                min={1}
-                max={12}
-                value={editingSpan?.w ?? 1}
-                onChange={(e) => setEditingSpan({ ...editingSpan, w: Math.max(1, Number(e.target.value) || 1) })}
-                onBlur={() => onUpdateLayoutSpan?.(editingSpan)}
-              />
-            </label>
-
-            <label className="tile-label">
-              Height (units):
-              <input
-                className="tile-input-small"
-                type="number"
-                min={1}
-                max={12}
-                value={editingSpan?.h ?? 1}
-                onChange={(e) => setEditingSpan({ ...editingSpan, h: Math.max(1, Number(e.target.value) || 1) })}
-                onBlur={() => onUpdateLayoutSpan?.(editingSpan)}
-              />
-            </label>
           </div>
         </div>
       )}
