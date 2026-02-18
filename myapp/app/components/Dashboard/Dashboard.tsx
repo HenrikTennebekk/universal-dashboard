@@ -188,8 +188,6 @@ export function Dashboard({
                 tileType={tile.type}
                 tileProps={tile.props}
                 onUpdateProps={(props) => onUpdateTile?.(tile.id, { props })}
-                layoutSpan={tile.layoutSpan}
-                onUpdateLayoutSpan={(span) => onUpdateTile?.(tile.id, { layoutSpan: span })}
                 _gridUnit={columnWidth}
                 _rowHeight={rowHeight}
                 _cols={finalCols}

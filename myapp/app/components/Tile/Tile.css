@@ -10,6 +10,51 @@
   position: relative;
 }
 
+.tile button {
+  background: #202020;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.tile button:hover {
+  background: #262626;
+}
+
+.tile button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tile input,
+.tile select {
+  background: #0f0f0f;
+  color: #fff;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+}
+
+.tile input[type="file"] {
+  padding: 4px;
+}
+
+.tile-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #1c1c1c;
+}
+
+.tile-title-input {
+  flex: 1;
+  min-width: 0;
+}
+
 .tile-header {
   padding: 8px 12px;
   font-weight: 600;
@@ -24,6 +69,19 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+}
+
+.tile-props-editor {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  background: #141414;
+  border-top: 1px solid #222;
+}
+
+.tile-props-editor label {
+  font-size: 0.85rem;
+  opacity: 0.9;
 }
 
 .clock-tile {
@@ -87,6 +145,47 @@
   fill: currentColor;
 }
 
+.image-tile {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-tile__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  animation: image-fade-in 300ms ease;
+}
+
+.image-tile__empty {
+  opacity: 0.7;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.tile-image-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #333;
+}
+
+@keyframes image-fade-in {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Input/Form Elements */
 .tile-input-full {
   width: 100%;
@@ -96,11 +195,12 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .tile-grid-col {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .tile-label {

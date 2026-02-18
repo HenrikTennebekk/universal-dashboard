@@ -11,12 +11,14 @@ export function createTile(type: TileType, customTitle?: string): AnyTileConfig 
     clock: "Clock",
     link: "Link",
     weather: "Weather",
+    image: "Images",
   };
 
   const defaultProps: Record<TileType, any> = {
     clock: { timeZone: "auto" },
     link: { url: "https://example.com" },
     weather: { city: "" },
+    image: { images: [], intervalSeconds: 6 },
   };
 
   return {
