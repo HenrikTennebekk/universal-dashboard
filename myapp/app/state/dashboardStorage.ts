@@ -65,8 +65,3 @@ export function saveSpaces(spaces: SpaceConfig[], activeSpaceId?: string) {
     // ignore
   }
 }
-
-export function clearDashboard() {
-  if (!isBrowser()) return;
-  localStorage.removeItem(STORAGE_KEY);
-}

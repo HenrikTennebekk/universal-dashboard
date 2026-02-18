@@ -11,7 +11,6 @@ const defaultTiles: AnyTileConfig[] = [
   {
     id: "clock-1",
     type: "clock",
-    title: "Local Time",
     props: {
       timeZone: "auto",
     },
@@ -26,9 +25,7 @@ export default function Home() {
     activeSpaceId,
     setActiveSpaceId,
     addSpace,
-    addTileToActive,
     addTileAtActive,
-    setLayoutColumnsForActive,
     setTileGapForActive,
     setLayoutForActive,
     setBackgroundForActive,
@@ -61,16 +58,6 @@ export default function Home() {
   }, [isEditing]);
 
   const tileTypes = Object.keys(tileRegistry) as Array<keyof typeof tileRegistry>;
-
-  function handleAddTile(type: TileType) {
-    const tile = createTile(type);
-    const ok = addTileToActive(tile);
-    if (!ok) {
-      // simple feedback; UI also disables buttons when full
-      // eslint-disable-next-line no-restricted-globals
-      alert("Cannot add tile — layout is full.");
-    }
-  }
 
   // compute whether the current layout is at capacity
   const layoutCap = (layout?: string | undefined) => {
@@ -129,11 +116,7 @@ export default function Home() {
             <div>
               <LayoutPicker
                 value={(activeSpace?.layout as any) ?? "preset-columns-three"}
-                currentColumns={activeSpace?.layoutColumns}
                 onChange={(l) => setLayoutForActive(l)}
-                onConfigureColumns={(n) => {
-                  setLayoutColumnsForActive(n);
-                }}
               />
             </div>
 
@@ -179,11 +162,9 @@ export default function Home() {
         onUpdateTile={updateTileInActive}
         onAddTile={(type, index) => {
           const tile = createTile(type);
-          // try to insert at index; fallback to append
-          const ok = (addTileAtActive as any)?.(tile, index) ?? false;
+          const ok = addTileAtActive(tile, index);
           if (!ok) {
-            // try append
-            addTileToActive(tile);
+            alert("Cannot add tile — layout is full.");
           }
         }}
       />

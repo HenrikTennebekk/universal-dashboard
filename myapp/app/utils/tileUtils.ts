@@ -6,14 +6,7 @@ export type TileType = keyof typeof tileRegistry;
 /**
  * Creates a new tile with default props based on type
  */
-export function createTile(type: TileType, customTitle?: string): AnyTileConfig {
-  const defaultTitles: Record<TileType, string> = {
-    clock: "Clock",
-    link: "Link",
-    weather: "Weather",
-    image: "Images",
-  };
-
+export function createTile(type: TileType): AnyTileConfig {
   const defaultProps: Record<TileType, any> = {
     clock: { timeZone: "auto" },
     link: { url: "https://example.com" },
@@ -24,7 +17,6 @@ export function createTile(type: TileType, customTitle?: string): AnyTileConfig 
   return {
     id: `${type}-${Date.now()}`,
     type,
-    title: customTitle ?? defaultTitles[type],
     props: defaultProps[type],
   };
 }

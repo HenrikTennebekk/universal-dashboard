@@ -50,18 +50,6 @@
   background: #1c1c1c;
 }
 
-.tile-title-input {
-  flex: 1;
-  min-width: 0;
-}
-
-.tile-header {
-  padding: 8px 12px;
-  font-weight: 600;
-  background: #1c1c1c;
-  margin: 0;
-}
-
 .tile-content {
   flex: 1;
   padding: 8px;
@@ -203,14 +191,4 @@
 .tile-grid-col {
   display: grid;
   gap: 10px;
-}
-
-.tile-label {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.tile-input-small {
-  width: 72px;
 }

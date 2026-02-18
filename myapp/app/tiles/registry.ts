@@ -30,7 +30,6 @@ export type TilePropsMap = {
 export type AnyTileConfig = {
   [K in TileType]: {
     id: string;
-    title: string;
     type: K;
     props: TilePropsMap[K];
     // Optional layout span (how many columns / rows this tile should occupy)
