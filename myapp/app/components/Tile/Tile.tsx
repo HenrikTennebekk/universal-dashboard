@@ -2,6 +2,32 @@ import "./Tile.css";
 import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 
+// Common IANA timezones
+const COMMON_TIMEZONES = [
+  "auto",
+  "UTC",
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "Europe/London",
+  "Europe/Paris",
+  "Europe/Berlin",
+  "Europe/Oslo",
+  "Europe/Amsterdam",
+  "Europe/Copenhagen",
+  "Asia/Tokyo",
+  "Asia/Shanghai",
+  "Asia/Hong_Kong",
+  "Asia/Singapore",
+  "Asia/Bangkok",
+  "Asia/Kolkata",
+  "Asia/Dubai",
+  "Australia/Sydney",
+  "Australia/Melbourne",
+  "Pacific/Auckland",
+];
+
 type TileProps = {
   title: string;
   children: ReactNode;
@@ -111,13 +137,37 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
             <div className="tile-grid-col">
               <div>
                 <label>Timezone:</label>
-                <input
+                <select
                   className="tile-input-full"
-                  value={editingProps?.timeZone ?? ""}
-                  onChange={(e) => setEditingProps({ ...editingProps, timeZone: e.target.value })}
+                  value={editingProps?.timeZone ?? "auto"}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "__custom__") {
+                      // User wants to enter custom timezone
+                      const custom = prompt("Enter IANA timezone (e.g., America/New_York):");
+                      if (custom) {
+                        setEditingProps({ ...editingProps, timeZone: custom });
+                      }
+                    } else {
+                      setEditingProps({ ...editingProps, timeZone: value });
+                    }
+                  }}
                   onBlur={() => saveProps()}
-                  placeholder="auto or Europe/Oslo"
-                />
+                >
+                  {COMMON_TIMEZONES.map((tz) => (
+                    <option key={tz} value={tz}>
+                      {tz === "auto" ? "Auto-detect (System)" : tz}
+                    </option>
+                  ))}
+                  <option value="__custom__" disabled={!editingProps?.timeZone || COMMON_TIMEZONES.includes(editingProps.timeZone)}>
+                    ─ Enter custom timezone ─
+                  </option>
+                </select>
+                {editingProps?.timeZone && !COMMON_TIMEZONES.includes(editingProps.timeZone) && (
+                  <div style={{ fontSize: "0.8rem", opacity: 0.6, marginTop: "4px" }}>
+                    Custom: {editingProps.timeZone}
+                  </div>
+                )}
               </div>
 
               <div>

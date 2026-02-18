@@ -88,11 +88,13 @@
   position: relative;
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 0;
   min-width: 0;
   container-type: size;
+  padding: 0 8px 8px 8px;
 }
 
 .clock-digital {
@@ -103,10 +105,10 @@
 }
 
 .clock-analog {
-  max-width: 100cqmin;
-  max-height: 100cqmin;
-  width: 100cqmin;
-  height: 100cqmin;
+  max-width: 85cqmin;
+  max-height: 85cqmin;
+  width: 85cqmin;
+  height: 85cqmin;
   display: block;
 }
 
