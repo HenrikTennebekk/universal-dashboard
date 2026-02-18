@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { AnyTileConfig } from "../tiles/registry";
 import { tileRegistry } from "../tiles/registry";
 import LayoutPicker, { presets as layoutPresets } from "../components/LayoutPicker/LayoutPicker";
+import { BackgroundPicker, type BackgroundConfig } from "../components/BackgroundPicker/BackgroundPicker";
 import { createTile, layoutCapacity as calculateLayoutCapacity, type TileType } from "../utils/tileUtils";
 import "./home.css";
 
@@ -66,8 +67,34 @@ export default function Home() {
 
   const isLayoutFull = (activeSpace && activeSpace.tiles.length >= layoutCap(activeSpace.layout)) ?? false;
 
+  // Helper function to compute the background style from BackgroundConfig
+  function getBackgroundStyle() {
+    const bg = activeSpace?.background;
+    if (!bg) {
+      // Fallback to old backgroundColor for backwards compatibility
+      if (activeSpace?.backgroundColor) {
+        return { backgroundColor: activeSpace.backgroundColor };
+      }
+      return {};
+    }
+
+    if (bg.type === "color") {
+      return { backgroundColor: bg.value };
+    } else if (bg.type === "gradient") {
+      return { background: bg.value };
+    } else if (bg.type === "image") {
+      return {
+        backgroundImage: `url(${bg.value})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      };
+    }
+    return {};
+  }
+
   return (
-    <div className="home-root" style={{ backgroundColor: activeSpace?.backgroundColor ?? undefined }}>
+    <div className="home-root" style={getBackgroundStyle()}>
       {isEditing && (
         <div className="home-toolbar">
           <div className="left">
@@ -136,13 +163,9 @@ export default function Home() {
             </div>
 
             <div>
-              <label>Background:</label>
-              <input
-                type="color"
-                value={activeSpace?.backgroundColor ?? "#00145c"}
-                onChange={(e) => setBackgroundForActive(e.target.value)}
-                style={{ marginLeft: 8, verticalAlign: "middle" }}
-                title="Choose background color"
+              <BackgroundPicker
+                value={activeSpace?.background}
+                onChange={(bg) => setBackgroundForActive(bg)}
               />
             </div>
 

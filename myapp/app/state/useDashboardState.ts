@@ -3,6 +3,7 @@ import type { AnyTileConfig } from "../tiles/registry";
 import { loadSpaces, saveSpaces, type SpaceConfig } from "./dashboardStorage";
 import { presets as layoutPresets } from "../components/LayoutPicker/LayoutPicker";
 import { layoutCapacity as calculateLayoutCapacity } from "../utils/tileUtils";
+import type { BackgroundConfig } from "../components/BackgroundPicker/BackgroundPicker";
 
 export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
   const initialSpaces: SpaceConfig[] = [
@@ -12,7 +13,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
       layout: "preset-columns-three",
       layoutColumns: 2,
       tiles: initialTiles,
-      backgroundColor: undefined,
+      background: { type: "color", value: "#00145c" },
       // sensible defaults: base tile unit width and gap (px)
       tileUnit: 320,
       tileGap: 12,
@@ -56,7 +57,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
 
   function addSpace(name = "New Space") {
     const id = `space-${Date.now()}`;
-    const s: SpaceConfig = { id, name, layout: "preset-columns-three", tiles: [], backgroundColor: undefined };
+    const s: SpaceConfig = { id, name, layout: "preset-columns-three", tiles: [], background: { type: "color", value: "#00145c" } };
     setSpaces((prev) => [...prev, s]);
     setActiveSpaceId(id);
   }
@@ -65,7 +66,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
     setSpaces((prev) => {
       const next = prev.filter((s) => s.id !== id);
       if (next.length === 0) {
-        const fallback: SpaceConfig = { id: "space-1", name: "Default", layout: "preset-columns-three", tiles: [], backgroundColor: undefined };
+        const fallback: SpaceConfig = { id: "space-1", name: "Default", layout: "preset-columns-three", tiles: [], background: { type: "color", value: "#00145c" } };
         setActiveSpaceId(fallback.id);
         return [fallback];
       }
@@ -112,8 +113,8 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
     return true;
   }
 
-  function setBackgroundForActive(color?: string) {
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, backgroundColor: color } : s)));
+  function setBackgroundForActive(background?: BackgroundConfig) {
+    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, background } : s)));
   }
 
   function removeTileFromActive(tileId: string) {

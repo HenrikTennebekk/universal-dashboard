@@ -1,4 +1,5 @@
 import type { AnyTileConfig } from "../tiles/registry";
+import type { BackgroundConfig } from "../components/BackgroundPicker/BackgroundPicker";
 
 const STORAGE_KEY = "universal-dashboard:v1";
 
@@ -15,6 +16,8 @@ export type SpaceConfig = {
   // base tile width/height unit (pixels) and gap between tiles (pixels)
   tileUnit?: number;
   tileGap?: number;
+  background?: BackgroundConfig;
+  // deprecated: old way of storing background
   backgroundColor?: string;
   tiles: AnyTileConfig[];
 };
