@@ -24,12 +24,14 @@
 .home-root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Dashboard inside home should grow and be scrollable when needed */
+/* Dashboard inside home should grow and scroll when content exceeds viewport */
 .home-root .dashboard {
   flex: 1 1 auto;
   min-height: 0; /* allow children to shrink inside flex */
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
