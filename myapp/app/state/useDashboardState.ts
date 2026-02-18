@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { AnyTileConfig } from "../tiles/registry";
 import { loadSpaces, saveSpaces, type SpaceConfig } from "./dashboardStorage";
 import { presets as layoutPresets } from "../components/LayoutPicker/LayoutPicker";
+import { layoutCapacity as calculateLayoutCapacity } from "../utils/tileUtils";
 
 export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
   const initialSpaces: SpaceConfig[] = [
@@ -49,16 +50,8 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
 
   const activeSpace = spaces.find((s) => s.id === activeSpaceId) ?? spaces[0];
 
-  function layoutCapacity(layout?: SpaceConfig["layout"]) {
-    if (!layout) return Infinity;
-    const p = layoutPresets.find((x) => x.id === layout);
-    if (p?.meta?.capacity !== undefined) return p.meta.capacity;
-    switch (layout) {
-      case "focus":
-        return 3;
-      default:
-        return Infinity;
-    }
+  function layoutCap(layout?: SpaceConfig["layout"]) {
+    return calculateLayoutCapacity(layout, layoutPresets as any);
   }
 
   function addSpace(name = "New Space") {
@@ -84,7 +77,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
   function addTileToActive(tile: AnyTileConfig) {
     // Prevent adding tiles if the layout capacity is reached.
     const current = spaces.find((s) => s.id === activeSpaceId) ?? spaces[0];
-    const capacity = layoutCapacity(current.layout);
+    const capacity = layoutCap(current.layout);
     if (current.tiles.length >= capacity) return false;
 
     setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, tiles: [...s.tiles, tile] } : s)));
@@ -93,7 +86,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
 
   function addTileAtActive(tile: AnyTileConfig, index?: number) {
     const current = spaces.find((s) => s.id === activeSpaceId) ?? spaces[0];
-    const capacity = layoutCapacity(current.layout);
+    const capacity = layoutCap(current.layout);
     if (current.tiles.length >= capacity) return false;
 
     setSpaces((prev) =>
@@ -158,7 +151,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
       prev.map((s) => {
         if (s.id !== activeSpaceId) return s;
         // enforce capacity for layouts that define one
-        const capacity = layoutCapacity(layout as any);
+        const capacity = layoutCap(layout as any);
         let tiles = s.tiles;
         if (Number.isFinite(capacity) && tiles.length > capacity) {
           tiles = tiles.slice(0, capacity);

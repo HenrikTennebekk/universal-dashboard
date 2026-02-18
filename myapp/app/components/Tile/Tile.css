@@ -26,10 +26,6 @@
   flex-direction: column;
 }
 
-.tile-content--clock {
-  padding: 12px;
-}
-
 .clock-tile {
   position: relative;
   flex: 1;
@@ -89,4 +85,30 @@
 
 .clock-center {
   fill: currentColor;
+}
+
+/* Input/Form Elements */
+.tile-input-full {
+  width: 100%;
+}
+
+.tile-flex-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tile-grid-col {
+  display: grid;
+  gap: 8px;
+}
+
+.tile-label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.tile-input-small {
+  width: 72px;
 }
