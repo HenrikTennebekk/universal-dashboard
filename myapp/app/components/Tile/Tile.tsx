@@ -53,7 +53,7 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
           )}
 
           {isEditing && (
-            <div style={{ marginLeft: "8px", display: "flex", gap: 8 }}>
+            <div className="tile-flex-row" style={{ marginLeft: "8px" }}>
               <button onClick={() => setShowPropsEditor((v) => !v)} aria-label="Edit props">
                 {showPropsEditor ? "Close" : "Edit"}
               </button>
@@ -71,10 +71,10 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
             <div>
               <label>URL:</label>
               <input
+                className="tile-input-full"
                 value={editingProps?.url ?? ""}
                 onChange={(e) => setEditingProps({ ...editingProps, url: e.target.value })}
                 onBlur={() => saveProps()}
-                style={{ width: "100%" }}
               />
             </div>
           )}
@@ -83,43 +83,43 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
             <div>
               <label>City:</label>
               <input
+                className="tile-input-full"
                 value={editingProps?.city ?? ""}
                 onChange={(e) => setEditingProps({ ...editingProps, city: e.target.value })}
                 onBlur={() => saveProps()}
-                style={{ width: "100%" }}
               />
             </div>
           )}
 
           {tileType === "clock" && (
-            <div style={{ display: "grid", gap: 8 }}>
+            <div className="tile-grid-col">
               <div>
                 <label>Timezone:</label>
                 <input
+                  className="tile-input-full"
                   value={editingProps?.timeZone ?? ""}
                   onChange={(e) => setEditingProps({ ...editingProps, timeZone: e.target.value })}
                   onBlur={() => saveProps()}
                   placeholder="auto or Europe/Oslo"
-                  style={{ width: "100%" }}
                 />
               </div>
 
               <div>
                 <label>Clock type:</label>
                 <select
+                  className="tile-input-full"
                   value={editingProps?.variant ?? "digital"}
                   onChange={(e) => {
                     setEditingProps({ ...editingProps, variant: e.target.value });
                   }}
                   onBlur={() => saveProps()}
-                  style={{ width: "100%" }}
                 >
                   <option value="digital">Digital</option>
                   <option value="analog">Analog</option>
                 </select>
               </div>
 
-              <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <label className="tile-flex-row">
                 <input
                   type="checkbox"
                   checked={editingProps?.use24Hour ?? true}
@@ -134,7 +134,7 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
           )}
 
 
-          <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+          <div className="tile-flex-row" style={{ marginTop: 8 }}>
             <button onClick={saveProps}>Save</button>
             <button
               onClick={() => {
@@ -145,30 +145,30 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
               Cancel
             </button>
           </div>
-          <div style={{ marginTop: 8, display: "flex", gap: 8, alignItems: "center" }}>
-            <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <div className="tile-flex-row" style={{ marginTop: 8 }}>
+            <label className="tile-label">
               Width (units):
               <input
+                className="tile-input-small"
                 type="number"
                 min={1}
                 max={12}
                 value={editingSpan?.w ?? 1}
                 onChange={(e) => setEditingSpan({ ...editingSpan, w: Math.max(1, Number(e.target.value) || 1) })}
                 onBlur={() => onUpdateLayoutSpan?.(editingSpan)}
-                style={{ width: 72 }}
               />
             </label>
 
-            <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <label className="tile-label">
               Height (units):
               <input
+                className="tile-input-small"
                 type="number"
                 min={1}
                 max={12}
                 value={editingSpan?.h ?? 1}
                 onChange={(e) => setEditingSpan({ ...editingSpan, h: Math.max(1, Number(e.target.value) || 1) })}
                 onBlur={() => onUpdateLayoutSpan?.(editingSpan)}
-                style={{ width: 72 }}
               />
             </label>
           </div>

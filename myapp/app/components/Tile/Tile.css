@@ -22,24 +22,6 @@
   padding: 8px;
 }
 
-.tile-handle-right {
-  top: 50%;
-  right: -7px;
-  transform: translateY(-50%);
-  cursor: ew-resize;
-}
-.tile-handle-bottom {
-  left: 50%;
-  bottom: -7px;
-  transform: translateX(-50%);
-  cursor: ns-resize;
-}
-.tile-handle-corner {
-  right: -7px;
-  bottom: -7px;
-  cursor: nwse-resize;
-}
-
 .clock-tile {
   position: relative;
   width: 100%;
@@ -54,10 +36,6 @@
   font-weight: 600;
   text-align: center;
   line-height: 1;
-}
-
-.clock-digital-overlay {
-  position: absolute;
 }
 
 .clock-analog {
@@ -98,4 +76,30 @@
 
 .clock-center {
   fill: currentColor;
+}
+
+/* Input/Form Elements */
+.tile-input-full {
+  width: 100%;
+}
+
+.tile-flex-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tile-grid-col {
+  display: grid;
+  gap: 8px;
+}
+
+.tile-label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.tile-input-small {
+  width: 72px;
 }

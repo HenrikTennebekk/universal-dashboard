@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { AnyTileConfig } from "../tiles/registry";
 import { tileRegistry } from "../tiles/registry";
 import LayoutPicker, { presets as layoutPresets } from "../components/LayoutPicker/LayoutPicker";
+import { createTile, layoutCapacity as calculateLayoutCapacity, type TileType } from "../utils/tileUtils";
 import "./home.css";
 
 const defaultTiles: AnyTileConfig[] = [
@@ -61,22 +62,8 @@ export default function Home() {
 
   const tileTypes = Object.keys(tileRegistry) as Array<keyof typeof tileRegistry>;
 
-  function handleAddTile(type: typeof tileTypes[number]) {
-    const id = `${type}-${Date.now()}`;
-    const title = type === "clock" ? "Clock" : type === "link" ? "Link" : "Weather";
-    const defaultProps: Record<string, any> = {
-      clock: { timeZone: "auto" },
-      link: { url: "https://example.com" },
-      weather: { city: "" },
-    };
-
-    const tile: AnyTileConfig = {
-      id,
-      type: type as any,
-      title,
-      props: defaultProps[type as string],
-    };
-
+  function handleAddTile(type: TileType) {
+    const tile = createTile(type);
     const ok = addTileToActive(tile);
     if (!ok) {
       // simple feedback; UI also disables buttons when full
@@ -87,12 +74,7 @@ export default function Home() {
 
   // compute whether the current layout is at capacity
   const layoutCap = (layout?: string | undefined) => {
-    if (!layout) return Infinity;
-    const p = layoutPresets.find((x) => x.id === layout);
-    if (p?.meta?.capacity !== undefined) return p.meta.capacity;
-    // fallback for older built-ins
-    if (layout === "focus") return 3;
-    return Infinity;
+    return calculateLayoutCapacity(layout, layoutPresets as any);
   };
 
   const isLayoutFull = (activeSpace && activeSpace.tiles.length >= layoutCap(activeSpace.layout)) ?? false;
@@ -196,21 +178,7 @@ export default function Home() {
         onRemoveTile={removeTileFromActive}
         onUpdateTile={updateTileInActive}
         onAddTile={(type, index) => {
-          const id = `${type}-${Date.now()}`;
-          const title = type === "clock" ? "Clock" : type === "link" ? "Link" : "Weather";
-          const defaultProps: Record<string, any> = {
-            clock: { timeZone: "auto" },
-            link: { url: "https://example.com" },
-            weather: { city: "" },
-          };
-
-          const tile: AnyTileConfig = {
-            id,
-            type: type as any,
-            title,
-            props: defaultProps[type as string],
-          };
-
+          const tile = createTile(type);
           // try to insert at index; fallback to append
           const ok = (addTileAtActive as any)?.(tile, index) ?? false;
           if (!ok) {
