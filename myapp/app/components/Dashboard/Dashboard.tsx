@@ -96,6 +96,9 @@ export function Dashboard({
   const computeRowsNeeded = (cols: number, items: AnyTileConfig[]) => {
     const heights = new Array(cols).fill(0);
     for (const it of items) {
+      // Skip null placeholders
+      if (!it || it === null) continue;
+      
       const w = Math.max(1, Math.min(cols, it.layoutSpan?.w ?? 1));
       const h = Math.max(1, it.layoutSpan?.h ?? 1);
 
@@ -166,8 +169,11 @@ export function Dashboard({
     <div ref={containerRef} className={`dashboard layout-${sanitizeId(layout)}`} style={inlineStyle}>
       {Array.from({ length: slotCount }).map((_, i) => {
         const tile = tiles[i];
+        
+        // Skip null placeholders - treat them as empty slots
+        const hasRealTile = tile && tile !== null;
 
-        if (tile) {
+        if (hasRealTile) {
           const TileComponent = tileRegistry[tile.type]
             .component as React.ComponentType<TilePropsMap[typeof tile.type]>;
 
@@ -199,10 +205,20 @@ export function Dashboard({
           );
         }
 
-        // empty placeholder slot
+        // empty placeholder slot - i is the exact array index where the tile should be inserted
         const focusStyle = isFocusLayout ? getFocusPlacement(i) : undefined;
         const placeholderStyle: React.CSSProperties =
           focusStyle ?? { gridColumn: `span 1`, gridRow: `span 1` };
+
+        // When not editing, render invisible placeholder to maintain grid positions
+        if (!isEditing) {
+          return (
+            <div
+              key={`slot-${i}`}
+              style={{ ...placeholderStyle, visibility: 'hidden', pointerEvents: 'none' }}
+            />
+          );
+        }
 
         return (
           <div
@@ -221,9 +237,13 @@ export function Dashboard({
 
             {openAddIndex === i && (
               <div className="placeholder-menu">
-                {tileTypes.map((t) => (
-                  <button key={t} onClick={() => handleAdd(t, i)} className="placeholder-menu-item">
-                    + {t.charAt(0).toUpperCase() + t.slice(1)}
+                {tileTypes.map((type) => (
+                  <button 
+                    key={type} 
+                    onClick={() => handleAdd(type, i)}
+                    className="placeholder-menu-item"
+                  >
+                    + {type.charAt(0).toUpperCase() + type.slice(1)}
                   </button>
                 ))}
               </div>

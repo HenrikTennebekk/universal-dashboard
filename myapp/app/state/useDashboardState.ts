@@ -30,7 +30,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
       if (idx !== 0) return s;
       const tiles = [...s.tiles];
       for (const def of initialTiles) {
-        const exists = tiles.some((t) => t.type === def.type && t.title === def.title);
+        const exists = tiles.some((t) => t && t.type === def.type && t.title === def.title);
         if (!exists) tiles.push(def);
       }
       return { ...s, tiles };
@@ -87,16 +87,34 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
   function addTileAtActive(tile: AnyTileConfig, index?: number) {
     const current = spaces.find((s) => s.id === activeSpaceId) ?? spaces[0];
     const capacity = layoutCap(current.layout);
-    if (current.tiles.length >= capacity) return false;
+    
+    // Count non-null tiles
+    const nonNullCount = current.tiles.filter(t => t !== null).length;
+    if (nonNullCount >= capacity) return false;
 
     setSpaces((prev) =>
       prev.map((s) => {
         if (s.id !== activeSpaceId) return s;
         const tiles = [...s.tiles];
-        if (index === undefined || index < 0 || index > tiles.length) {
-          tiles.push(tile);
+        
+        if (typeof index === "number" && Number.isFinite(index) && index >= 0 && index < capacity) {
+          // Fill with nulls up to the index if necessary
+          while (tiles.length < index) {
+            tiles.push(null as any);
+          }
+          
+          // If index is within current array, check if replacing null or inserting
+          if (index < tiles.length) {
+            if (tiles[index] === null) {
+              tiles[index] = tile;
+            } else {
+              tiles.splice(index, 0, tile);
+            }
+          } else {
+            tiles[index] = tile;
+          }
         } else {
-          tiles.splice(index, 0, tile);
+          tiles.push(tile);
         }
         return { ...s, tiles };
       })
@@ -109,14 +127,14 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
   }
 
   function removeTileFromActive(tileId: string) {
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, tiles: s.tiles.filter((t) => t.id !== tileId) } : s)));
+    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, tiles: s.tiles.filter((t) => t && t.id !== tileId) } : s)));
   }
 
   function updateTileInActive(tileId: string, changes: Partial<AnyTileConfig>) {
     setSpaces((prev) =>
       prev.map((s) =>
         s.id === activeSpaceId
-          ? { ...s, tiles: s.tiles.map((t) => (t.id === tileId ? { ...t, ...(changes as any) } : t)) }
+          ? { ...s, tiles: s.tiles.map((t) => (t && t.id === tileId ? { ...t, ...(changes as any) } : t)) }
           : s
       )
     );
@@ -160,7 +178,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
         // apply default spans for known presets to match picker thumbnails
         const spans = getDefaultSpans(layout as any);
         if (spans) {
-          tiles = tiles.map((t, i) => ({ ...t, layoutSpan: spans[i] ?? { w: 1, h: 1 } }));
+          tiles = tiles.map((t, i) => t ? { ...t, layoutSpan: spans[i] ?? { w: 1, h: 1 } } : t);
         }
 
         return { ...s, layout, tiles };

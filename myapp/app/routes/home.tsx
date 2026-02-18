@@ -179,11 +179,9 @@ export default function Home() {
         onUpdateTile={updateTileInActive}
         onAddTile={(type, index) => {
           const tile = createTile(type);
-          // try to insert at index; fallback to append
-          const ok = (addTileAtActive as any)?.(tile, index) ?? false;
+          const ok = addTileAtActive(tile, index);
           if (!ok) {
-            // try append
-            addTileToActive(tile);
+            alert("Cannot add tile — layout is full.");
           }
         }}
       />
