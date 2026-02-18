@@ -29,11 +29,9 @@ const COMMON_TIMEZONES = [
 ];
 
 type TileProps = {
-  title: string;
   children: ReactNode;
   isEditing?: boolean;
   onRemove?: () => void;
-  onUpdateTitle?: (title: string) => void;
   tileType?: string;
   tileProps?: any;
   onUpdateProps?: (props: any) => void;
@@ -44,8 +42,7 @@ type TileProps = {
   _maxRows?: number;
 };
 
-export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tileType, tileProps, onUpdateProps, _gridUnit, _rowHeight, _cols }: TileProps) {
-  const [editingTitle, setEditingTitle] = useState(title);
+export function Tile({ children, isEditing, onRemove, tileType, tileProps, onUpdateProps, _gridUnit, _rowHeight, _cols }: TileProps) {
   const [editingProps, setEditingProps] = useState<any>(tileProps ?? {});
   const [showPropsEditor, setShowPropsEditor] = useState(false);
 
@@ -80,30 +77,12 @@ export function Tile({ title, children, isEditing, onRemove, onUpdateTitle, tile
     <div className="tile">
       {isEditing && (
         <div className="tile-header-row">
-          {isEditing ? (
-            <input
-              className="tile-title-input"
-              value={editingTitle}
-              onChange={(e) => setEditingTitle(e.target.value)}
-              onBlur={() => onUpdateTitle?.(editingTitle)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-              }}
-            />
-          ) : (
-            <h2 className="tile-header">{title}</h2>
-          )}
-
-          {isEditing && (
-            <div className="tile-flex-row" style={{ marginLeft: "8px" }}>
-              <button onClick={() => setShowPropsEditor((v) => !v)} aria-label="Edit props">
-                {showPropsEditor ? "Close" : "Edit"}
-              </button>
-              <button onClick={onRemove} aria-label="Remove tile">
-                Remove
-              </button>
-            </div>
-          )}
+          <button onClick={() => setShowPropsEditor((v) => !v)} aria-label="Edit props">
+            {showPropsEditor ? "Close" : "Edit"}
+          </button>
+          <button onClick={onRemove} aria-label="Remove tile">
+            Remove
+          </button>
         </div>
       )}
 

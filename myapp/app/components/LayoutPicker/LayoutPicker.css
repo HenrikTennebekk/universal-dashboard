@@ -41,27 +41,3 @@
   font-size: 11px;
   color: #ffffff;
 }
-
-.lp-columns-editor {
-  position: absolute;
-  left: 0;
-  top: 68px;
-  background: white;
-  border: 1px solid rgba(0,0,0,0.08);
-  padding: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  border-radius: 6px;
-  z-index: 50;
-}
-.lp-columns-editor input[type="number"] {
-  padding: 4px 6px;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 4px;
-}
-
-.lp-columns-editor,
-.lp-columns-editor label,
-.lp-columns-editor input,
-.lp-columns-editor button {
-  color: #111;
-}

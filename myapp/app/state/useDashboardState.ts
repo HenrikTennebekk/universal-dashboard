@@ -30,7 +30,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
       if (idx !== 0) return s;
       const tiles = [...s.tiles];
       for (const def of initialTiles) {
-        const exists = tiles.some((t) => t && t.type === def.type && t.title === def.title);
+        const exists = tiles.some((t) => t && t.type === def.type && t.id === def.id);
         if (!exists) tiles.push(def);
       }
       return { ...s, tiles };
@@ -72,16 +72,6 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
       if (id === activeSpaceId) setActiveSpaceId(next[0].id);
       return next;
     });
-  }
-
-  function addTileToActive(tile: AnyTileConfig) {
-    // Prevent adding tiles if the layout capacity is reached.
-    const current = spaces.find((s) => s.id === activeSpaceId) ?? spaces[0];
-    const capacity = layoutCap(current.layout);
-    if (current.tiles.length >= capacity) return false;
-
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, tiles: [...s.tiles, tile] } : s)));
-    return true;
   }
 
   function addTileAtActive(tile: AnyTileConfig, index?: number) {
@@ -186,14 +176,6 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
     );
   }
 
-  function setLayoutColumnsForActive(count?: number) {
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, layoutColumns: count } : s)));
-  }
-
-  function setTileUnitForActive(unit?: number) {
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, tileUnit: unit } : s)));
-  }
-
   function setTileGapForActive(gap?: number) {
     setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, tileGap: gap } : s)));
   }
@@ -209,15 +191,12 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
     setActiveSpaceId,
     addSpace,
     removeSpace,
-    addTileToActive,
     removeTileFromActive,
     updateTileInActive,
     setLayoutForActive,
     setBackgroundForActive,
     setNameForActive,
     addTileAtActive,
-    setLayoutColumnsForActive,
-    setTileUnitForActive,
     setTileGapForActive,
   };
 }

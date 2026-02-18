@@ -121,27 +121,3 @@
   padding: 12px;
 }
 
-
-
-/* Orientation responsive tweaks */
-@media (orientation: portrait) {
-	.dashboard {
-		--tile-min-width: 320px;
-		--tile-row-height: 240px;
-	}
-}
-
-@media (orientation: landscape) {
-	.dashboard {
-		--tile-min-width: 420px;
-		--tile-row-height: 300px;
-	}
-}
-
-/* Example overrides (uncomment to use):
-:root {
-	--tile-min-width: 300px;
-	--tile-row-height: 200px;
-}
-*/
-

@@ -187,10 +187,8 @@ export function Dashboard({
           return (
             <div className="dashboard-tile" key={tile.id} style={placementStyle}>
               <Tile
-                title={tile.title}
                 isEditing={isEditing}
                 onRemove={() => onRemoveTile?.(tile.id)}
-                onUpdateTitle={(title) => onUpdateTile?.(tile.id, { title })}
                 tileType={tile.type}
                 tileProps={tile.props}
                 onUpdateProps={(props) => onUpdateTile?.(tile.id, { props })}
