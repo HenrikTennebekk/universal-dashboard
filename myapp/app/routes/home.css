@@ -1,10 +1,13 @@
 .home-toolbar{
   display:flex;
-  gap:18px;
+  gap:12px;
   align-items:center;
-  padding:12px;
-  justify-content: space-between;
-  background-color: rgb(255, 255, 255, 0.05);
+  padding:12px 16px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .home-toolbar .left,
 .home-toolbar .right{
@@ -15,9 +18,44 @@
 .home-toolbar label{
   margin-right:6px;
   font-weight:600;
+  color: #e0e0e0;
+  font-size: 13px;
 }
 .home-toolbar select{
   margin-right:8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.home-toolbar select:hover{
+  background-color: rgba(255, 255, 255, 0.15);
+}
+.home-toolbar input[type="text"],
+.home-toolbar input[type="number"]{
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+.home-toolbar input[type="text"]::placeholder,
+.home-toolbar input[type="number"]::placeholder{
+  color: rgba(255, 255, 255, 0.5);
+}
+.home-toolbar button{
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.home-toolbar button:hover{
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 /* Make the page fill the viewport and let the dashboard take remaining space */
@@ -26,6 +64,25 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+  position: relative;
+}
+
+/* Add a semi-transparent overlay for better readability over image backgrounds */
+.home-root::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-root > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Dashboard inside home should grow and scroll when content exceeds viewport */

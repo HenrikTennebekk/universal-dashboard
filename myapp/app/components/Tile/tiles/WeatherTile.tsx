@@ -69,17 +69,15 @@ export function WeatherTile({ city }: WeatherTileProps) {
   }, [city]);
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <div style={{ fontSize: "1rem", opacity: 0.9 }}>{locationLabel}</div>
-      <div style={{ fontSize: "3rem", margin: "8px 0" }}>{emoji}</div>
+    <div className="weather-tile">
+      <div className="weather-location">{locationLabel}</div>
+      <div className="weather-emoji">{emoji}</div>
       {loading ? (
-        <div>Loading…</div>
+        <div className="weather-status">Loading…</div>
       ) : error ? (
-        <div style={{ color: "salmon" }}>{error}</div>
+        <div className="weather-status weather-status--error">{error}</div>
       ) : (
-        <div style={{ fontSize: "1.25rem" }}>
-          {temperature !== null ? `${Math.round(temperature)}°C` : "—"}
-        </div>
+        <div className="weather-temp">{temperature !== null ? `${Math.round(temperature)}°C` : "—"}</div>
       )}
     </div>
   );

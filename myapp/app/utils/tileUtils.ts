@@ -18,6 +18,10 @@ export function createTile(type: TileType): AnyTileConfig {
     id: `${type}-${Date.now()}`,
     type,
     props: defaultProps[type],
+    appearance: {
+      backgroundColor: "#111111",
+      opacity: 1,
+    },
   };
 }
 

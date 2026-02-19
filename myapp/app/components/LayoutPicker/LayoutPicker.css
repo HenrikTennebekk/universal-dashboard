@@ -32,12 +32,13 @@
   width: 46px;
   height: 46px;
   fill: none;
-  stroke: #ffffff;
+  stroke: #e0e0e0;
   stroke-width: 2;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
 .lp-label {
   font-size: 11px;
-  color: #ffffff;
+  color: #e0e0e0;
+  font-weight: 500;
 }

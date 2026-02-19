@@ -26,12 +26,18 @@ export type TilePropsMap = {
   image: ImageTileProps;
 };
 
+export type TileAppearance = {
+  backgroundColor?: string;
+  opacity?: number;
+};
+
 // ✅ This must be exported!
 export type AnyTileConfig = {
   [K in TileType]: {
     id: string;
     type: K;
     props: TilePropsMap[K];
+    appearance?: TileAppearance;
     // Optional layout span (how many columns / rows this tile should occupy)
     layoutSpan?: { w?: number; h?: number };
   };

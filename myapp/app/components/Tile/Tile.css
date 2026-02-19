@@ -1,13 +1,28 @@
 .tile {
-  background: #111;
+  background: transparent;
   color: white;
   border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
   box-sizing: border-box;
   position: relative;
+}
+
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tile-bg, #111);
+  opacity: var(--tile-bg-opacity, 1);
+  z-index: 0;
+}
+
+.tile > * {
+  position: relative;
+  z-index: 1;
 }
 
 .tile button {
@@ -42,6 +57,13 @@
   padding: 4px;
 }
 
+.tile input[type="color"] {
+  width: 44px;
+  height: 32px;
+  padding: 2px;
+  border-radius: 8px;
+}
+
 .tile-header-row {
   display: flex;
   align-items: center;
@@ -57,6 +79,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+  container-type: size;
 }
 
 .tile-props-editor {
@@ -65,6 +88,21 @@
   padding: 12px;
   background: #141414;
   border-top: 1px solid #222;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.tile--props-open .tile-content {
+  display: none;
+}
+
+.tile-props-actions {
+  position: sticky;
+  bottom: 0;
+  background: #141414;
+  padding-bottom: 8px;
 }
 
 .tile-props-editor label {
@@ -165,6 +203,43 @@
   object-fit: cover;
   border-radius: 6px;
   border: 1px solid #333;
+}
+
+.weather-tile {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 4cqmin;
+}
+
+.weather-location {
+  font-size: clamp(0.9rem, 4cqmin, 1.6rem);
+  opacity: 0.9;
+}
+
+.weather-emoji {
+  font-size: clamp(2rem, 18cqmin, 6rem);
+  line-height: 1;
+}
+
+.weather-temp {
+  font-size: clamp(1rem, 6cqmin, 2.4rem);
+  font-weight: 600;
+}
+
+.weather-status {
+  font-size: clamp(0.85rem, 4cqmin, 1.5rem);
+}
+
+.weather-status--error {
+  color: salmon;
 }
 
 @keyframes image-fade-in {
