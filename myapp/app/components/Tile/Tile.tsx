@@ -1,6 +1,7 @@
 import "./Tile.css";
-import { useState, useEffect } from "react";
-import type { ReactNode } from "react";
+import { useState } from "react";
+import type { ReactNode, CSSProperties } from "react";
+import type { TileAppearance } from "../../tiles/registry";
 
 // Common IANA timezones
 const COMMON_TIMEZONES = [
@@ -35,19 +36,34 @@ type TileProps = {
   tileType?: string;
   tileProps?: any;
   onUpdateProps?: (props: any) => void;
-  // internal props passed from Dashboard for interactive resizing
-  _gridUnit?: number;
-  _rowHeight?: number;
-  _cols?: number;
-  _maxRows?: number;
+  appearance?: TileAppearance;
+  onUpdateAppearance?: (appearance: TileAppearance) => void;
 };
 
-export function Tile({ children, isEditing, onRemove, tileType, tileProps, onUpdateProps, _gridUnit, _rowHeight, _cols }: TileProps) {
+export function Tile({
+  children,
+  isEditing,
+  onRemove,
+  tileType,
+  tileProps,
+  onUpdateProps,
+  appearance,
+  onUpdateAppearance,
+}: TileProps) {
   const [editingProps, setEditingProps] = useState<any>(tileProps ?? {});
+  const [editingAppearance, setEditingAppearance] = useState<TileAppearance>({
+    backgroundColor: appearance?.backgroundColor ?? "#111111",
+    opacity: appearance?.opacity ?? 1,
+  });
   const [showPropsEditor, setShowPropsEditor] = useState(false);
+  const isPropsOpen = Boolean(isEditing && showPropsEditor);
 
   function saveProps() {
     onUpdateProps?.(editingProps);
+    onUpdateAppearance?.({
+      backgroundColor: editingAppearance.backgroundColor ?? "#111111",
+      opacity: Number.isFinite(editingAppearance.opacity as number) ? (editingAppearance.opacity as number) : 1,
+    });
     setShowPropsEditor(false);
   }
 
@@ -73,8 +89,18 @@ export function Tile({ children, isEditing, onRemove, tileType, tileProps, onUpd
     }
   }
 
+  const tileStyle: CSSProperties = {
+    ...(appearance?.backgroundColor ? { "--tile-bg": appearance.backgroundColor } : undefined),
+    "--tile-bg-opacity": Number.isFinite(appearance?.opacity as number) ? (appearance?.opacity as number) : 1,
+  } as CSSProperties;
+
+  function clampOpacity(value: number) {
+    if (!Number.isFinite(value)) return 1;
+    return Math.min(1, Math.max(0, value));
+  }
+
   return (
-    <div className="tile">
+    <div className={`tile${isPropsOpen ? " tile--props-open" : ""}`} style={tileStyle}>
       {isEditing && (
         <div className="tile-header-row">
           <button onClick={() => setShowPropsEditor((v) => !v)} aria-label="Edit props">
@@ -88,6 +114,50 @@ export function Tile({ children, isEditing, onRemove, tileType, tileProps, onUpd
 
       {isEditing && showPropsEditor && (
         <div className="tile-props-editor">
+          <div className="tile-grid-col">
+            <label>Tile color:</label>
+            <input
+              type="color"
+              value={editingAppearance.backgroundColor ?? "#111111"}
+              onChange={(e) =>
+                setEditingAppearance((prev) => ({
+                  ...prev,
+                  backgroundColor: e.target.value,
+                }))
+              }
+            />
+
+            <label>Opacity:</label>
+            <div className="tile-flex-row">
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={Number.isFinite(editingAppearance.opacity as number) ? (editingAppearance.opacity as number) : 1}
+                onChange={(e) =>
+                  setEditingAppearance((prev) => ({
+                    ...prev,
+                    opacity: clampOpacity(Number(e.target.value)),
+                  }))
+                }
+              />
+              <input
+                type="number"
+                min={0}
+                max={1}
+                step={0.05}
+                value={Number.isFinite(editingAppearance.opacity as number) ? (editingAppearance.opacity as number) : 1}
+                onChange={(e) =>
+                  setEditingAppearance((prev) => ({
+                    ...prev,
+                    opacity: clampOpacity(Number(e.target.value)),
+                  }))
+                }
+              />
+            </div>
+          </div>
+
           {tileType === "link" && (
             <div>
               <label>URL:</label>
@@ -225,11 +295,15 @@ export function Tile({ children, isEditing, onRemove, tileType, tileProps, onUpd
           )}
 
 
-          <div className="tile-flex-row" style={{ marginTop: 8 }}>
+          <div className="tile-flex-row tile-props-actions" style={{ marginTop: 8 }}>
             <button onClick={saveProps}>Save</button>
             <button
               onClick={() => {
                 setEditingProps(tileProps ?? {});
+                setEditingAppearance({
+                  backgroundColor: appearance?.backgroundColor ?? "#111111",
+                  opacity: appearance?.opacity ?? 1,
+                });
                 setShowPropsEditor(false);
               }}
             >

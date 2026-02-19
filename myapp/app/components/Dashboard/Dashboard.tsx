@@ -133,14 +133,6 @@ export function Dashboard({
   const rowHeight = Math.max(48, Math.floor(availableForRows / Math.max(1, rowsNeeded)));
   (inlineStyle as any)["--tile-row"] = `${rowHeight}px`;
 
-  const columnWidth = (() => {
-    const el = containerRef.current;
-    if (!el) return Math.max(64, tileUnit);
-    const totalGap = Math.max(0, (finalCols - 1) * tileGap);
-    const width = Math.max(0, el.clientWidth - totalGap);
-    return Math.max(32, Math.floor(width / finalCols));
-  })();
-
   const focusPlacements = useMemo(() => {
     if (layout === "preset-focus-three") {
       return [
@@ -191,11 +183,9 @@ export function Dashboard({
                 onRemove={() => onRemoveTile?.(tile.id)}
                 tileType={tile.type}
                 tileProps={tile.props}
+                appearance={tile.appearance}
                 onUpdateProps={(props) => onUpdateTile?.(tile.id, { props })}
-                _gridUnit={columnWidth}
-                _rowHeight={rowHeight}
-                _cols={finalCols}
-                _maxRows={rowsNeeded}
+                onUpdateAppearance={(appearance) => onUpdateTile?.(tile.id, { appearance })}
               >
                 <TileComponent {...(tile.props as TilePropsMap[typeof tile.type])} />
               </Tile>
