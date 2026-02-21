@@ -93,27 +93,30 @@ export function Dashboard({
 
   const isFocusLayout = layout === "preset-focus-three" || layout === "preset-focus-four";
 
-  const computeRowsNeeded = (cols: number, items: AnyTileConfig[]) => {
+  const computeRowsNeeded = (cols: number, items: AnyTileConfig[]): number => {
     const heights = new Array(cols).fill(0);
-    for (const it of items) {
-      // Skip null placeholders
-      if (!it || it === null) continue;
+    for (const item of items) {
+      if (!item || item === null) continue;
       
-      const w = Math.max(1, Math.min(cols, it.layoutSpan?.w ?? 1));
-      const h = Math.max(1, it.layoutSpan?.h ?? 1);
+      const w = Math.max(1, Math.min(cols, item.layoutSpan?.w ?? 1));
+      const h = Math.max(1, item.layoutSpan?.h ?? 1);
 
+      // Find the best position (leftmost column with minimum height)
       let bestIdx = 0;
-      let bestMax = Infinity;
+      let bestHeight = Infinity;
       for (let c = 0; c <= cols - w; c++) {
         const segmentMax = Math.max(...heights.slice(c, c + w));
-        if (segmentMax < bestMax) {
-          bestMax = segmentMax;
+        if (segmentMax < bestHeight) {
+          bestHeight = segmentMax;
           bestIdx = c;
         }
       }
 
-      const newHeight = bestMax + h;
-      for (let c = bestIdx; c < bestIdx + w; c++) heights[c] = newHeight;
+      // Update heights for this item's span
+      const newHeight = bestHeight + h;
+      for (let c = bestIdx; c < bestIdx + w; c++) {
+        heights[c] = newHeight;
+      }
     }
     return Math.max(1, Math.max(...heights));
   };

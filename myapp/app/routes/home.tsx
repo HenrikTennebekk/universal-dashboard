@@ -8,16 +8,8 @@ import { BackgroundPicker, type BackgroundConfig } from "../components/Backgroun
 import { createTile, layoutCapacity as calculateLayoutCapacity, type TileType } from "../utils/tileUtils";
 import "./home.css";
 
-const defaultTiles: AnyTileConfig[] = [
-  {
-    id: "clock-1",
-    type: "clock",
-    props: {
-      timeZone: "auto",
-    },
-    layoutSpan: { w: 2, h: 1 },
-  },
-];
+// Initial tiles (can be empty or populated with defaults)
+const defaultTiles: AnyTileConfig[] = [];
 
 export default function Home() {
   const {
@@ -38,6 +30,7 @@ export default function Home() {
 
 
   const [isEditing, setIsEditing] = useState(false);
+  const hasSpaces = spaces.length > 0;
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -108,6 +101,7 @@ export default function Home() {
               value={activeSpace?.name ?? ""}
               onChange={(e) => setNameForActive?.(e.target.value)}
               placeholder="Space name"
+              disabled={!activeSpace}
               style={{ width: 180 }}
             />
 
@@ -131,13 +125,22 @@ export default function Home() {
           </div>
 
           <label>Space:</label>
-            <select value={activeSpaceId} onChange={(e) => setActiveSpaceId(e.target.value)}>
-              {spaces.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+          <select
+            value={activeSpaceId ?? ""}
+            onChange={(e) => setActiveSpaceId(e.target.value)}
+            disabled={!hasSpaces}
+          >
+            {!hasSpaces && (
+              <option value="" disabled>
+                No spaces
+              </option>
+            )}
+            {spaces.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
 
           <div className="right">
             <div>
@@ -154,9 +157,9 @@ export default function Home() {
                 value={activeSpace?.tileGap ?? 12}
                 onChange={(e) => {
                   const v = Math.max(0, Number(e.target.value) || 0);
-                  // @ts-ignore
                   setTileGapForActive?.(v);
                 }}
+                disabled={!activeSpace}
                 style={{ width: 60, marginLeft: 8 }}
                 title="Gap between tiles in pixels"
               />
@@ -184,6 +187,10 @@ export default function Home() {
         onRemoveTile={removeTileFromActive}
         onUpdateTile={updateTileInActive}
         onAddTile={(type, index) => {
+          if (!activeSpace) {
+            alert("Create a space first.");
+            return;
+          }
           const tile = createTile(type);
           const ok = addTileAtActive(tile, index);
           if (!ok) {

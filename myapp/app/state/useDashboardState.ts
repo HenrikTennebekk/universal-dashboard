@@ -6,25 +6,19 @@ import { layoutCapacity as calculateLayoutCapacity } from "../utils/tileUtils";
 import type { BackgroundConfig } from "../components/BackgroundPicker/BackgroundPicker";
 
 export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
-  const initialSpaces: SpaceConfig[] = [
-    {
-      id: "space-1",
-      name: "Default",
-      layout: "preset-columns-three",
-      layoutColumns: 2,
-      tiles: initialTiles,
-      background: { type: "color", value: "#00145c" },
-      // sensible defaults: base tile unit width and gap (px)
-      tileUnit: 320,
-      tileGap: 12,
-    },
-  ];
+  const defaultSpaceConfig = {
+    layout: "preset-columns-three",
+    layoutColumns: 2,
+    background: { type: "color", value: "#ff8800" } as BackgroundConfig,
+    // sensible defaults: base tile unit width and gap (px)
+    tileUnit: 320,
+    tileGap: 12,
+  };
 
   const [spaces, setSpaces] = useState<SpaceConfig[]>(() => {
     const stored = loadSpaces();
 
-    // merge defaults into the first space when it's empty
-    if (stored.length === 0) return initialSpaces;
+    if (stored.length === 0) return [];
 
     // If stored exists, ensure any new default tiles are added to first space
     const merged = stored.map((s, idx) => {
@@ -42,14 +36,14 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
 
   const [activeSpaceId, setActiveSpaceId] = useState<string | undefined>(() => {
     const stored = loadSpaces();
-    return stored.length > 0 ? stored[0].id : initialSpaces[0].id;
+    return stored.length > 0 ? stored[0].id : undefined;
   });
 
   useEffect(() => {
     saveSpaces(spaces, activeSpaceId);
   }, [spaces, activeSpaceId]);
 
-  const activeSpace = spaces.find((s) => s.id === activeSpaceId) ?? spaces[0];
+  const activeSpace = spaces.find((s) => s.id === activeSpaceId);
 
   function layoutCap(layout?: SpaceConfig["layout"]) {
     return calculateLayoutCapacity(layout, layoutPresets as any);
@@ -57,7 +51,7 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
 
   function addSpace(name = "New Space") {
     const id = `space-${Date.now()}`;
-    const s: SpaceConfig = { id, name, layout: "preset-columns-three", tiles: [], background: { type: "color", value: "#00145c" } };
+    const s: SpaceConfig = { id, name, tiles: [], ...defaultSpaceConfig };
     setSpaces((prev) => [...prev, s]);
     setActiveSpaceId(id);
   }
@@ -66,72 +60,76 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
     setSpaces((prev) => {
       const next = prev.filter((s) => s.id !== id);
       if (next.length === 0) {
-        const fallback: SpaceConfig = { id: "space-1", name: "Default", layout: "preset-columns-three", tiles: [], background: { type: "color", value: "#00145c" } };
-        setActiveSpaceId(fallback.id);
-        return [fallback];
+        setActiveSpaceId(undefined);
+        return [];
       }
       if (id === activeSpaceId) setActiveSpaceId(next[0].id);
       return next;
     });
   }
 
+  // Helper to apply changes only to the active space
+  function updateActiveSpace(updater: (space: SpaceConfig) => SpaceConfig) {
+    if (!activeSpaceId) return;
+    setSpaces((prev) =>
+      prev.map((s) => (s.id === activeSpaceId ? updater(s) : s))
+    );
+  }
+
   function addTileAtActive(tile: AnyTileConfig, index?: number) {
-    const current = spaces.find((s) => s.id === activeSpaceId) ?? spaces[0];
+    if (!activeSpaceId) return false;
+    const current = spaces.find((s) => s.id === activeSpaceId);
+    if (!current) return false;
     const capacity = layoutCap(current.layout);
     
     // Count non-null tiles
     const nonNullCount = current.tiles.filter(t => t !== null).length;
     if (nonNullCount >= capacity) return false;
 
-    setSpaces((prev) =>
-      prev.map((s) => {
-        if (s.id !== activeSpaceId) return s;
-        const tiles = [...s.tiles];
+    updateActiveSpace((s) => {
+      const tiles = [...s.tiles];
+      
+      if (typeof index === "number" && Number.isFinite(index) && index >= 0 && index < capacity) {
+        // Fill with nulls up to the index if necessary
+        while (tiles.length < index) {
+          tiles.push(null as any);
+        }
         
-        if (typeof index === "number" && Number.isFinite(index) && index >= 0 && index < capacity) {
-          // Fill with nulls up to the index if necessary
-          while (tiles.length < index) {
-            tiles.push(null as any);
-          }
-          
-          // If index is within current array, check if replacing null or inserting
-          if (index < tiles.length) {
-            if (tiles[index] === null) {
-              tiles[index] = tile;
-            } else {
-              tiles.splice(index, 0, tile);
-            }
-          } else {
+        // If index is within current array, check if replacing null or inserting
+        if (index < tiles.length) {
+          if (tiles[index] === null) {
             tiles[index] = tile;
+          } else {
+            tiles.splice(index, 0, tile);
           }
         } else {
-          tiles.push(tile);
+          tiles[index] = tile;
         }
-        return { ...s, tiles };
-      })
-    );
+      } else {
+        tiles.push(tile);
+      }
+      return { ...s, tiles };
+    });
     return true;
   }
 
   function setBackgroundForActive(background?: BackgroundConfig) {
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, background } : s)));
+    updateActiveSpace((s) => ({ ...s, background }));
   }
 
   function removeTileFromActive(tileId: string) {
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, tiles: s.tiles.filter((t) => t && t.id !== tileId) } : s)));
+    updateActiveSpace((s) => ({ ...s, tiles: s.tiles.filter((t) => t && t.id !== tileId) }));
   }
 
   function updateTileInActive(tileId: string, changes: Partial<AnyTileConfig>) {
-    setSpaces((prev) =>
-      prev.map((s) =>
-        s.id === activeSpaceId
-          ? { ...s, tiles: s.tiles.map((t) => (t && t.id === tileId ? { ...t, ...(changes as any) } : t)) }
-          : s
-      )
-    );
+    updateActiveSpace((s) => ({
+      ...s,
+      tiles: s.tiles.map((t) => (t && t.id === tileId ? { ...t, ...(changes as any) } : t)),
+    }));
   }
 
   function setLayoutForActive(layout: SpaceConfig["layout"]) {
+    if (!activeSpaceId) return;
     // helper: default spans for presets so UI matches thumbnail layouts
     function getDefaultSpans(presetId?: string) {
       switch (presetId) {
@@ -156,33 +154,29 @@ export function useDashboardState(initialTiles: AnyTileConfig[] = []) {
       }
     }
 
-    setSpaces((prev) =>
-      prev.map((s) => {
-        if (s.id !== activeSpaceId) return s;
-        // enforce capacity for layouts that define one
-        const capacity = layoutCap(layout as any);
-        let tiles = s.tiles;
-        if (Number.isFinite(capacity) && tiles.length > capacity) {
-          tiles = tiles.slice(0, capacity);
-        }
+    updateActiveSpace((s) => {
+      const capacity = layoutCap(layout as any);
+      let tiles = s.tiles;
+      if (Number.isFinite(capacity) && tiles.length > capacity) {
+        tiles = tiles.slice(0, capacity);
+      }
 
-        // apply default spans for known presets to match picker thumbnails
-        const spans = getDefaultSpans(layout as any);
-        if (spans) {
-          tiles = tiles.map((t, i) => t ? { ...t, layoutSpan: spans[i] ?? { w: 1, h: 1 } } : t);
-        }
+      // apply default spans for known presets to match picker thumbnails
+      const spans = getDefaultSpans(layout as any);
+      if (spans) {
+        tiles = tiles.map((t, i) => t ? { ...t, layoutSpan: spans[i] ?? { w: 1, h: 1 } } : t);
+      }
 
-        return { ...s, layout, tiles };
-      })
-    );
+      return { ...s, layout, tiles };
+    });
   }
 
   function setTileGapForActive(gap?: number) {
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, tileGap: gap } : s)));
+    updateActiveSpace((s) => ({ ...s, tileGap: gap }));
   }
 
   function setNameForActive(name: string) {
-    setSpaces((prev) => prev.map((s) => (s.id === activeSpaceId ? { ...s, name } : s)));
+    updateActiveSpace((s) => ({ ...s, name }));
   }
 
   return {
