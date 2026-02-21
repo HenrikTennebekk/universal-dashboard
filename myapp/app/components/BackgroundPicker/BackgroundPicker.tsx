@@ -15,12 +15,12 @@ type Props = {
 export function BackgroundPicker({ value, onChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
-  const [gradientAngle, setGradientAngle] = useState(135);
-  const [gradientColor1, setGradientColor1] = useState("#667eea");
-  const [gradientColor2, setGradientColor2] = useState("#764ba2");
+  const [gradientAngle, setGradientAngle] = useState(0);
+  const [gradientColor1, setGradientColor1] = useState("#ff0000");
+  const [gradientColor2, setGradientColor2] = useState("#ff8800");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const bgType = value?.type ?? "color";
-  const bgValue = value?.value ?? "#00145c";
+  const bgValue = value?.value ?? "#ff8800";
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,6 +40,10 @@ export function BackgroundPicker({ value, onChange }: Props) {
     return `linear-gradient(${gradientAngle}deg, ${gradientColor1} 0%, ${gradientColor2} 100%)`;
   };
 
+  const buildAndSendGradient = () => {
+    onChange({ type: "gradient", value: buildGradientCSS() });
+  };
+
   const handleOpenMenu = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
@@ -55,11 +59,10 @@ export function BackgroundPicker({ value, onChange }: Props) {
     if (type === "gradient") {
       onChange({ type: "gradient", value: buildGradientCSS() });
     } else if (type === "color") {
-      onChange({ type: "color", value: "#00145c" });
+      onChange({ type: "color", value: "#ff8800" });
     } else if (type === "image") {
       onChange({ type: "image", value: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=1200" });
     }
-    setIsOpen(false);
   };
 
   return (
@@ -141,8 +144,8 @@ export function BackgroundPicker({ value, onChange }: Props) {
                   value={gradientColor1}
                   onChange={(e) => {
                     setGradientColor1(e.target.value);
-                    onChange({ type: "gradient", value: `linear-gradient(${gradientAngle}deg, ${e.target.value} 0%, ${gradientColor2} 100%)` });
                   }}
+                  onBlur={buildAndSendGradient}
                   className="bp-color-input"
                 />
 
@@ -152,8 +155,8 @@ export function BackgroundPicker({ value, onChange }: Props) {
                   value={gradientColor2}
                   onChange={(e) => {
                     setGradientColor2(e.target.value);
-                    onChange({ type: "gradient", value: `linear-gradient(${gradientAngle}deg, ${gradientColor1} 0%, ${e.target.value} 100%)` });
                   }}
+                  onBlur={buildAndSendGradient}
                   className="bp-color-input"
                 />
               </div>

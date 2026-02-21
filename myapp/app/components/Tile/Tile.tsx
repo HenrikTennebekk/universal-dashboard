@@ -58,6 +58,11 @@ export function Tile({
   const [showPropsEditor, setShowPropsEditor] = useState(false);
   const isPropsOpen = Boolean(isEditing && showPropsEditor);
 
+  function clampOpacity(value: number): number {
+    if (!Number.isFinite(value)) return 1;
+    return Math.min(1, Math.max(0, value));
+  }
+
   function saveProps() {
     onUpdateProps?.(editingProps);
     onUpdateAppearance?.({
@@ -94,10 +99,6 @@ export function Tile({
     "--tile-bg-opacity": Number.isFinite(appearance?.opacity as number) ? (appearance?.opacity as number) : 1,
   } as CSSProperties;
 
-  function clampOpacity(value: number) {
-    if (!Number.isFinite(value)) return 1;
-    return Math.min(1, Math.max(0, value));
-  }
 
   return (
     <div className={`tile${isPropsOpen ? " tile--props-open" : ""}`} style={tileStyle}>
